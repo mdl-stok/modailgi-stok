@@ -129,7 +129,7 @@ katId(yol).then(function (id) {
 hedef.classList.remove('dmf-yuk'); if (!id || !window.filterModel || typeof window.getProducts !== 'function') throw 0;
 window.filterModel.filter.CategoryIdList = [id]; if (window.productsModel) window.productsModel.targetId = id; try { window.categoryId = id; } catch (x) { }
 history.pushState(null, '', yol); [].slice.call(pn.querySelectorAll('.dmf-kat a')).forEach(function (a) { a.classList.toggle('dmf-bu', a === hedef); });
-uygula(true);
+uygula(true); urunSay(secimler()); // kategori de\u011fi\u015fince "N \u00fcr\u00fcn\u00fc g\u00f6ster" say\u0131s\u0131 da yenilensin (\u00f6nce yaln\u0131z renk/beden se\u00e7iminde yenileniyordu)
 }).catch(function () { var s = secimler(); secim.min = s.min; secim.max = s.max; try { sessionStorage.setItem('dmfAcik', '1'); } catch (x) { } location.href = adresYaz(secim, s.rv, s.bv, yol); });
 }
 
