@@ -101,6 +101,11 @@ var git = el('a', 'dki-git', '\u00dcr\u00fcn sayfas\u0131na git'); git.href = p.
 
 function kartKur(kart) {
 if (kart.__dki) return; var resim = kart.querySelector('.productImage'), link = kart.querySelector('.detailLink[data-id]'); if (!resim || !link) return; kart.__dki = 1;
+// \u00dcr\u00fcn ad\u0131n\u0131n ba\u015f\u0131ndaki marka ad\u0131 ("Modailgi  Hakim Yaka \u2026") yaln\u0131z listede gizlenir; Ticimax'teki ad, sayfa adresi, Google/pazar yeri beslemesi de\u011fi\u015fmez (kullan\u0131c\u0131 karar\u0131 2026-11-17)
+[].slice.call(kart.querySelectorAll('.productName a, .productName')).forEach(function (e) {
+[].slice.call(e.childNodes).forEach(function (t) { if (t.nodeType === 3 && /^\s*modailgi\s+/i.test(t.nodeValue)) t.nodeValue = t.nodeValue.replace(/^\s*modailgi\s+/i, ''); });
+if (e.title) e.title = e.title.replace(/^\s*modailgi\s+/i, '');
+});
 var id = link.getAttribute('data-id'), favA = kart.querySelector('.favori a.favoriteslist'), ad = ((kart.querySelector('.productName') || {}).textContent || '').trim();
 var kutu = el('div', 'dki-kutu');
 var arti = el('button', 'dki-arti'); arti.type = 'button'; arti.innerHTML = SVG_ARTI; arti.setAttribute('aria-label', 'Sepete ekle: ' + ad); arti.setAttribute('aria-haspopup', 'dialog');
