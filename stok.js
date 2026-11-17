@@ -108,8 +108,8 @@ var ctl = window.AbortController ? new AbortController() : null, z = setTimeout(
 fetch(ADRES, ctl ? { signal: ctl.signal } : {}).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
 clearTimeout(z); if (!j || !j.v || !j.t) return;
 if (Date.now() - Date.parse(j.t) > ESKI_SAAT * 3600000) return; // veri bayatsa yanlış stok göstermemek için bölüm yok
-var d = j.v[kod] || j.v[kod.toLowerCase()] || j.v[kod.replace(/I/g, 'ı').toLowerCase()]; if (d) kur(d, j.m, j.t); // Nebim'de birkaç eski kod küçük harf / noktasız ı ile kayıtlı
+var d = j.v[kod] || j.v[kod.toLowerCase()] || j.v[kod.replace(/I/g, 'ı').toLowerCase()]; if (d) { if (document.getElementById('liTabOzellikler') || document.readyState !== 'loading') kur(d, j.m, j.t); else document.addEventListener('DOMContentLoaded', function () { kur(d, j.m, j.t); }); } // sekme henüz yoksa sayfa hazır olunca // Nebim'de birkaç eski kod küçük harf / noktasız ı ile kayıtlı
 }).catch(function () {});
 }
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', calis); else calis();
+calis(); // 2026-11-17: sayfanın tamamen hazır olması (DOMContentLoaded) beklenmez; blok sayfa sonunda olduğu için ürün sekmeleri zaten hazır. Önceden veri ~3 sn geç geliyor, bölüm geç beliriyordu.
 })();
