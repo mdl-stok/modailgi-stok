@@ -35,6 +35,7 @@ var st = el('style'); st.textContent =
 '#ProductPageProductList .productItem .productDetail{display:flex!important;flex-wrap:wrap;align-items:center;column-gap:8px}#ProductPageProductList .productItem .productDetail>*{flex:0 0 100%;min-width:0}#ProductPageProductList .productItem .productDetail>.productPrice{flex:0 1 auto;margin:0!important}#ProductPageProductList .productItem .productDetail>.boxUrunlerContent{flex:0 0 auto;margin:0 0 0 auto!important;width:auto!important}#ProductPageProductList .productItem .productDetail>.productMarka:empty,#ProductPageProductList .productItem .productDetail>.productIcon:empty{display:none}' +
 // Sayfan\u0131n \u00fcst\u00fcne \u00e7\u0131k d\u00fc\u011fmesi (COS gibi, t\u00fcm sayfalar): yuvarlak k\u00fc\u00e7\u00fck d\u00fc\u011fme yerine 44 px beyaz kare, ince siyah \u00e7er\u00e7eve, ince ok (ok CSS \u00e7izgisiyle \u00e7izilir: blokta g\u00f6m\u00fcl\u00fc resim/data: adresi yok, Ticimax y\u00f6netim ekran\u0131 yap\u0131\u015ft\u0131r\u0131rken t\u0131kan\u0131yordu)
 '#back-to-top{width:44px!important;height:44px!important;right:24px!important;bottom:24px!important}#back-to-top a{width:44px!important;height:44px!important;border-radius:0!important;border:1px solid #000!important;background:#fff!important;box-shadow:none!important;display:flex!important;align-items:center;justify-content:center}#back-to-top a svg{display:none!important}#back-to-top a:before{content:"";width:9px;height:9px;border-left:1px solid #000;border-top:1px solid #000;transform:translateY(2px) rotate(45deg)}#back-to-top a:hover{background:#f4f4f4!important}' +
+'@media (max-width:767px){#back-to-top:not(.dki-gor){display:none!important}}' + // telefonda Ticimax d\u00fc\u011fmeyi k\u00fc\u00e7\u00fck kayd\u0131rmada a\u00e7\u0131yordu; ancak 1,5 ekran boyu inince g\u00f6r\u00fcn\u00fcr (a\u015fa\u011f\u0131daki kayd\u0131rma dinleyicisi)
 '@media (max-width:767px){#back-to-top,#back-to-top a{width:38px!important;height:38px!important}#back-to-top{right:12px!important;bottom:84px!important}}' +
 // \u00dcr\u00fcn sayfas\u0131, telefon: foto\u011fraf alan\u0131 kenardan kenara (uygulama hissi). Sayfa kutusu (#divIcerik) iki yanda 10 px i\u00e7 bo\u015fluk veriyor; yaln\u0131z foto\u011fraf
 // alan\u0131 d\u0131\u015far\u0131 ta\u015f\u0131r\u0131l\u0131r, ad/fiyat yerinde kal\u0131r. width:auto KULLANMA (galeri kayd\u0131r\u0131c\u0131s\u0131 geni\u015fli\u011fi yanl\u0131\u015f hesaplay\u0131p sayfay\u0131 yana ta\u015f\u0131rd\u0131); calc ile verilir.
@@ -229,6 +230,11 @@ else setTimeout(oynat, 150);
 })();
 }
 setTimeout(ipucu, 300);
+// Yukar\u0131 \u00e7\u0131k d\u00fc\u011fmesi (telefon): 1,5 ekran boyu a\u015fa\u011f\u0131 inilmeden g\u00f6r\u00fcnmez; g\u00f6r\u00fcn\u00fcrl\u00fc\u011f\u00fc yine Ticimax y\u00f6netir, biz yaln\u0131z erken \u00e7\u0131kmas\u0131n\u0131 engelleriz
+(function () {
+var kare = 0, guncelle = function () { kare = 0; var d = document.getElementById('back-to-top'); if (d) d.classList.toggle('dki-gor', (window.scrollY || 0) > window.innerHeight * 1.5); };
+window.addEventListener('scroll', function () { if (!kare) { kare = 1; requestAnimationFrame(guncelle); } }, { passive: true }); guncelle();
+})();
 function tara() { [].slice.call(document.querySelectorAll('.ItemOrj .productItem')).forEach(kartKur); }
 function basla() { tara(); setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 0); // bo\u015fluk kalk\u0131nca kart geni\u015fli\u011fi de\u011fi\u015fir: \u00f6nceden kurulmu\u015f foto\u011fraf kayd\u0131r\u0131c\u0131lar\u0131 yeni geni\u015fli\u011fe g\u00f6re yeniden \u00f6l\u00e7\u00fcls\u00fcn
 var bekleyen = 0; new MutationObserver(function () { if (bekleyen) return; bekleyen = 1; requestAnimationFrame(function () { bekleyen = 0; tara(); }); }).observe(document.body, { childList: true, subtree: true }); }
