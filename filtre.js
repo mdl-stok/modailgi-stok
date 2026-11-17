@@ -43,7 +43,8 @@ var icinde = function (b) { return b.gruplar.some(function (x) { return x.yol ==
 var b = bolumler.filter(function (x) { return x.yol === burasi && x.gruplar.some(function (g) { return g.ad; }); })[0] || bolumler.filter(icinde)[0] || { gruplar: [] };
 // Grup sayfas\u0131ndaysak (\u00f6r. Gilda) ya da bir grubun kategorisindeysek yaln\u0131z o grubu g\u00f6ster; b\u00f6l\u00fcm sayfas\u0131nda (\u00f6r. Yeniler) hepsini.
 var grp = b.gruplar.filter(function (x) { return x.yol === burasi || x.ogeler.some(function (o) { return o.yol === burasi; }); });
-return { burasi: burasi, gruplar: b.yol === burasi || !grp.length ? b.gruplar : grp };
+var taban = b.yol === burasi || !grp.length ? (b.yol || burasi) : (grp[0].yol || b.yol || burasi); // hi\u00e7bir kategori se\u00e7ili de\u011filken d\u00f6n\u00fclecek sayfa (b\u00f6l\u00fcm ya da grup sayfas\u0131)
+return { burasi: burasi, taban: taban, gruplar: b.yol === burasi || !grp.length ? b.gruplar : grp };
 }
 
 // Adresten se\u00e7ili filtreleri oku
@@ -115,7 +116,7 @@ function kutu(ad, secili, ek) { var k = el('button', 'dmf-k'); k.type = 'button'
 
 // Kategori ba\u011flant\u0131lar\u0131: sitenin \u00fcst men\u00fcs\u00fcnden, BU SAYFANIN B\u00d6L\u00dcM\u00dcN\u00dcN (Sonbahar&K\u0131\u015f, \u0130lkbahar&Yaz, Koleksiyon\u2026) alt kategorileri.
 // Men\u00fc yap\u0131s\u0131: \u00fcst ba\u011flant\u0131n\u0131n <li>'si alt\u0131nda b\u00fcy\u00fck harfli grup ba\u015fl\u0131klar\u0131 (MODA\u0130LG\u0130, G\u0130LDA-XL\u2026) ve onlar\u0131n alt\u0131ndaki kategori ba\u011flant\u0131lar\u0131.
-var kb = kategoriBolumu(); if (kb.gruplar.length) { var kblk = blok('Kategori', true); kb.gruplar.forEach(function (g) { if (kb.gruplar.length > 1) kblk.ic.appendChild(el('div', 'dmf-gb', g.ad)); var kd = el('div', 'dmf-kat'); g.ogeler.forEach(function (o) { var a = el('a', o.yol === kb.burasi ? 'dmf-bu' : '', o.ad); a.href = o.href; a.addEventListener('click', function (e) { kategoriyeGec(e, o.yol); }); a.addEventListener('pointerdown', function () { katId(o.yol); }); kd.appendChild(a); }); kblk.ic.appendChild(kd); }); }
+var kb = kategoriBolumu(); if (kb.gruplar.length) { var kblk = blok('Kategori', true); kb.gruplar.forEach(function (g) { if (kb.gruplar.length > 1) kblk.ic.appendChild(el('div', 'dmf-gb', g.ad)); var kd = el('div', 'dmf-kat'); g.ogeler.forEach(function (o) { var a = el('a', '', o.ad); a.href = o.href; a.dataset.yol = o.yol; a.setAttribute('role', 'button'); a.addEventListener('click', function (e) { kategoriyeGec(e, o.yol); }); a.addEventListener('pointerdown', function () { katId(o.yol); }); kd.appendChild(a); }); kblk.ic.appendChild(kd); }); }
 // Kategori se\u00e7ilince panel kapanmaz: arkada o kategorinin sayfas\u0131 a\u00e7\u0131l\u0131r, panel yeni sayfada a\u00e7\u0131k gelir; se\u00e7ili renk/beden/fiyat korunur.
 var KID = {}; try { KID = JSON.parse(sessionStorage.getItem('dmfKid') || '{}'); } catch (x) { }
 function katId(yol) { // kategori adresi \u2192 Ticimax kategori kimli\u011fi (sayfa kayna\u011f\u0131ndan bir kez okunur, oturum boyunca saklan\u0131r)
@@ -123,15 +124,24 @@ if (KID[yol]) return Promise.resolve(KID[yol]);
 if (!katId.p) katId.p = {}; if (katId.p[yol]) return katId.p[yol];
 return katId.p[yol] = fetch(yol, { credentials: 'same-origin' }).then(function (r) { return r.text(); }).then(function (h) { var m = /"targetId":(\d+)/.exec(h), id = m ? +m[1] : 0; if (id) { KID[yol] = id; try { sessionStorage.setItem('dmfKid', JSON.stringify(KID)); } catch (x) { } } return id; });
 }
-function kategoriyeGec(e, yol) { // kategori arkada de\u011fi\u015fir (sayfa yenilenmez), panel a\u00e7\u0131k kal\u0131r; kategori kimli\u011fi o sayfan\u0131n kayna\u011f\u0131ndan okunur
-e.preventDefault(); var hedef = e.currentTarget; hedef.classList.add('dmf-yuk');
-katId(yol).then(function (id) {
-hedef.classList.remove('dmf-yuk'); if (!id || !window.filterModel || typeof window.getProducts !== 'function') throw 0;
-window.filterModel.filter.CategoryIdList = [id]; if (window.productsModel) window.productsModel.targetId = id; try { window.categoryId = id; } catch (x) { }
-history.pushState(null, '', yol); [].slice.call(pn.querySelectorAll('.dmf-kat a')).forEach(function (a) { a.classList.toggle('dmf-bu', a === hedef); });
-uygula(true); urunSay(secimler()); // kategori de\u011fi\u015fince "N \u00fcr\u00fcn\u00fc g\u00f6ster" say\u0131s\u0131 da yenilensin (\u00f6nce yaln\u0131z renk/beden se\u00e7iminde yenileniyordu)
-}).catch(function () { var s = secimler(); secim.min = s.min; secim.max = s.max; try { sessionStorage.setItem('dmfAcik', '1'); } catch (x) { } location.href = adresYaz(secim, s.rv, s.bv, yol); });
+// Kategori (kullan\u0131c\u0131 iste\u011fi 2026-11-17): \u00e7ipler a\u00e7-kapa ve \u00c7OKLU se\u00e7ilir. Se\u00e7im yoksa taban sayfa (\u00f6r. Yeni Sezon); tek se\u00e7imde o kategorinin adresi;
+// \u00e7oklu se\u00e7imde taban adres + #kat=yol1,yol2 (yenileyince geri y\u00fcklenir). Ticimax CategoryIdList'i "veya" ile birle\u015ftirir: se\u00e7ilen kategorilerin \u00fcr\u00fcnleri gelir.
+var katS = {}; if (kb.burasi !== kb.taban && kb.gruplar.some(function (g) { return g.ogeler.some(function (o) { return o.yol === kb.burasi; }); })) katS[kb.burasi] = 1;
+try { var hk = /[#&]kat=([^&]+)/.exec(location.hash); if (hk && yolu(location.href) === kb.taban) decodeURIComponent(hk[1]).split(',').forEach(function (y) { if (y) katS[y] = 1; }); } catch (x) { }
+function katCiz() { [].slice.call(ic.querySelectorAll('.dmf-kat a')).forEach(function (a) { var s = !!katS[a.dataset.yol]; a.classList.toggle('dmf-bu', s); a.setAttribute('aria-pressed', s ? 'true' : 'false'); }); }
+var katSira = 0;
+function katUygula() {
+var yollar = Object.keys(katS), hedef = yollar.length ? yollar : [kb.taban], no = ++katSira;
+Promise.all(hedef.map(katId)).then(function (ids) {
+if (no !== katSira) return; ids = ids.filter(Boolean); if (!ids.length || !window.filterModel || typeof window.getProducts !== 'function') throw 0;
+window.filterModel.filter.CategoryIdList = ids; if (window.productsModel) window.productsModel.targetId = ids[0]; try { window.categoryId = ids[0]; } catch (x) { }
+var adres = yollar.length === 1 ? yollar[0] : kb.taban; history.pushState(null, '', adres);
+uygula(true); urunSay(secimler()); musaitGetir(ids);
+if (yollar.length > 1) { var u = location.pathname + location.search + '#kat=' + encodeURIComponent(yollar.join(',')); [0, 600, 1500].forEach(function (ms) { setTimeout(function () { if (no === katSira && Object.keys(katS).length > 1 && location.hash.indexOf('kat=') < 0) history.replaceState(null, '', location.pathname + location.search + '#kat=' + encodeURIComponent(Object.keys(katS).join(','))); }, ms); }); } // Ticimax adresi sonradan yeniden yaz\u0131yor (setFilterUrl): #kat birka\u00e7 kez geri eklenir
+}).catch(function () { var y = yollar.length === 1 ? yollar[0] : kb.taban, s = secimler(); secim.min = s.min; secim.max = s.max; try { sessionStorage.setItem('dmfAcik', '1'); } catch (x) { } location.href = adresYaz(secim, s.rv, s.bv, y); });
 }
+function kategoriyeGec(e, yol) { e.preventDefault(); if (katS[yol]) delete katS[yol]; else katS[yol] = 1; katCiz(); katUygula(); }
+katCiz(); if (Object.keys(katS).length > 1) setTimeout(katUygula, 0); // #kat= ile \u00e7oklu se\u00e7imli adres a\u00e7\u0131ld\u0131ysa uygula
 
 var renkKutu = [], bedenKutu = [], fiyatKutu = [];
 // Renk: aile kutusu ailenin t\u00fcm tonlar\u0131n\u0131 se\u00e7er; yan\u0131ndaki ok o ailenin tonlar\u0131n\u0131 a\u00e7ar (tek ton se\u00e7ilebilir). Se\u00e7im renk kimlikleri k\u00fcmesinde tutulur.
@@ -144,8 +154,8 @@ tonlar.forEach(function (t) { hepsi = hepsi.concat(t.v); });
 var hucre = el('div', 'dmf-hc'), ab = el('button', 'dmf-ab'), n = el('span', 'dmf-n'), ad = el('span', 'dmf-ad', a), sy = el('span', 'dmf-ks');
 n.style.background = tanim ? tanim[1] : a === '\u0130ki renkli' ? 'linear-gradient(135deg,#111 50%,#f3eee3 50%)' : '#ccc';
 ab.type = 'button'; ab.appendChild(n); ab.appendChild(ad); ab.appendChild(sy); hucre.appendChild(ab);
-var ui = { ad: a, tonlar: tonlar, hepsi: hepsi, ab: ab, sy: sy, hucre: hucre, ok: null };
-ab.addEventListener('click', function () { var tam = hepsi.every(function (v) { return renkSec[v]; }); hepsi.forEach(function (v) { if (tam) delete renkSec[v]; else renkSec[v] = 1; }); renkCiz(); guncelle(); });
+var ui = { ad: a, tonlar: tonlar, hepsi: hepsi, tumTonlar: tonlar, tumHepsi: hepsi, ab: ab, sy: sy, hucre: hucre, ok: null };
+ab.addEventListener('click', function () { var tam = ui.hepsi.every(function (v) { return renkSec[v]; }); ui.hepsi.forEach(function (v) { if (tam) delete renkSec[v]; else renkSec[v] = 1; }); renkCiz(); guncelle(); });
 if (tonlar.length > 1) { var ok = el('button', 'dmf-ok'); ok.type = 'button'; ok.setAttribute('aria-label', a + ' tonlar\u0131n\u0131 g\u00f6ster'); ok.setAttribute('aria-expanded', 'false'); ok.addEventListener('click', function () { acikAile = acikAile === ui ? null : ui; renkCiz(); }); hucre.appendChild(ok); ui.ok = ok; }
 aileUI.push(ui); rz.appendChild(hucre);
 });
@@ -164,6 +174,33 @@ tonAlan.appendChild(kd);
 }
 renkCiz();
 if (B) { var bb = blok('Beden', false), bz = el('div', 'dmf-iz dmf-iz5'); bedenAdlari.forEach(function (ad) { var v = bedenGrup[ad], k = kutu(ad, v.some(function (x) { return secim.beden[x]; })); k.dataset.v = v.join(','); bedenKutu.push(k); bz.appendChild(k); }); bb.ic.appendChild(bz); var bedenSay = bb.sayac; }
+// Kategoriye g\u00f6re m\u00fcsait renk/beden (kullan\u0131c\u0131 iste\u011fi 2026-11-17: "tulum se\u00e7ince bej yoksa \u00e7\u0131kmamal\u0131"). Panel kategorisi arkada de\u011fi\u015fince Ticimax'in kendi
+// filtre servisi (GetFilterVariablesV3, \u22480,25 sn) o kategorideki renk ve bedenleri verir; olmayan aile/ton/beden gizlenir, se\u00e7iliyse se\u00e7imden \u00e7\u0131kar.
+// Servis yaln\u0131z kategoriye g\u00f6re daralt\u0131r (renk se\u00e7imine g\u00f6re beden daraltmaz; 2026-11-17 \u00f6l\u00e7\u00fcld\u00fc). Hata olursa hi\u00e7bir \u015fey gizlenmez.
+function musaitUygula(renkV, bedenV) {
+aileUI.forEach(function (u) {
+u.tonlar = renkV ? u.tumTonlar.map(function (t) { return { ad: t.ad, v: t.v.filter(function (v) { return renkV[v]; }) }; }).filter(function (t) { return t.v.length; }) : u.tumTonlar;
+u.hepsi = []; u.tonlar.forEach(function (t) { u.hepsi = u.hepsi.concat(t.v); });
+u.hucre.hidden = !u.hepsi.length; if (u.ok) u.ok.hidden = u.tonlar.length < 2; if (!u.hepsi.length && acikAile === u) acikAile = null;
+u.tumHepsi.forEach(function (v) { if (renkV && !renkV[v]) delete renkSec[v]; });
+});
+bedenKutu.forEach(function (k) { var var_ = !bedenV || k.dataset.v.split(',').some(function (v) { return bedenV[v]; }); k.hidden = !var_; if (!var_) k.setAttribute('aria-pressed', 'false'); });
+renkCiz();
+}
+function musaitGetir(ids) { // se\u00e7ili kategorilerin (birle\u015fim) renk/beden de\u011ferleri; her kategori i\u00e7in bir istek
+try {
+if (!window.ticimaxApi || !ticimaxApi.product || !ticimaxApi.product.getFilterVariablesV3) return;
+var pm = window.productsModel || {}, no = musaitGetir.no = (musaitGetir.no || 0) + 1;
+Promise.all(ids.map(function (id) {
+var f = JSON.parse(JSON.stringify(window.filterModel.filter)); f.CategoryIdList = [id]; f.FilterObject = []; f.MinPrice = 0; f.MaxPrice = 0;
+return new Promise(function (res) { ticimaxApi.product.getFilterVariablesV3({ CategoryId: id, BrandId: 0, SupplierId: 0, TagId: 0, IsNewProduct: false, IsDiscountedProduct: false, IsProductCombine: false, SearchKeyword: '', TransitionOrder: pm.transitionOrder, PageType: pm.pageType, PageId: id, ProductListPageId: 0, Filter: f, IsOpportunityProduct: false, IsShowcaseProduct: false }, res); });
+})).then(function (rs) {
+if (no !== musaitGetir.no) return; var renkV = {}, bedenV = {}, tamam = true;
+rs.forEach(function (r) { if (!r || r.isError || !r.filters) { tamam = false; return; } r.filters.forEach(function (g) { (g.elements || []).forEach(function (e) { if (+g.id === 1) renkV[e.value] = 1; if (+g.id === 2) bedenV[e.value] = 1; }); }); });
+if (!tamam) return; musaitUygula(renkV, bedenV); guncelle();
+});
+} catch (e) { }
+}
 var fb = blok('Fiyat', false), fz = el('div', 'dmf-iz dmf-iz2'); FIYAT.forEach(function (f) { var k = kutu(f[2], secim.min === f[0] && secim.max === f[1]); k.style.textTransform = 'none'; k.dataset.min = f[0]; k.dataset.max = f[1]; k.addEventListener('click', function () { fiyatKutu.forEach(function (x) { if (x !== k) x.setAttribute('aria-pressed', 'false'); }); guncelle(); }); fiyatKutu.push(k); fz.appendChild(k); }); fb.ic.appendChild(fz); var fiyatSay = fb.sayac;
 
 var alt = el('div', 'dmf-alt'), goster = el('button', 'dmf-g', '\u00dcr\u00fcnleri g\u00f6ster'), temizle = el('button', 'dmf-t', 'Filtreleri kald\u0131r'); goster.type = temizle.type = 'button'; alt.appendChild(goster); alt.appendChild(temizle);
