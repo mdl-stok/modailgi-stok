@@ -54,7 +54,7 @@ var st = el('style'); st.textContent =
 // Telefonda kart dar: fiyat + eski fiyat + renkler tek sat\u0131ra s\u0131\u011fm\u0131yor, renkler alta d\u00fc\u015f\u00fcp sa\u011fa yaslan\u0131nca da\u011f\u0131n\u0131k duruyordu. Telefonda renkler fiyat\u0131n alt\u0131nda ayr\u0131 sat\u0131rda, sola yasl\u0131, fiyatla ayn\u0131 hizada (kullan\u0131c\u0131 karar\u0131), biraz k\u00fc\u00e7\u00fck
 '@media (max-width:767px){#ProductPageProductList .productItem .productDetail>.boxUrunlerContent{flex:0 0 100%;margin:6px 0 0!important;padding:0!important;justify-content:flex-start}#ProductPageProductList .productItem .boxUrunlerContainer{margin:0!important;padding:0!important}#ProductPageProductList .productItem .productDetail{padding-left:8px!important;padding-right:8px!important}#ProductPageProductList .productItem .boxUrunResimContent img{width:14px!important;height:14px!important}#ProductPageProductList .productItem .v-count{font-size:12px;line-height:14px;height:14px}}' +
 '.dki-ok .dki-k{display:none}' +
-'@media (max-width:767px){.dki-ok.dki-coklu{display:flex;width:28px;height:48px;margin-top:-24px;background:transparent;color:#111;filter:drop-shadow(0 0 1px rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.7))}.dki-ok:hover{background:transparent}.dki-ok svg:not(.dki-k){display:none}.dki-ok .dki-k{display:block}.dki-geri{left:0}.dki-ileri{right:0}.dki-ok[disabled]{opacity:0;pointer-events:none}}' +
+'@media (max-width:767px){.dki-ok,.dki-ok.dki-coklu{display:none!important}}' + // telefonda ok yok (kullan\u0131c\u0131 karar\u0131 2026-11-17: COS tarz\u0131 ince ok denendi, kald\u0131r\u0131ld\u0131); kayd\u0131rma + \u00e7izgi + ilk a\u00e7\u0131l\u0131\u015f ipucu yeter
 '@media (max-width:767px){.dki-kutu{right:6px;bottom:6px}.dki-kutu button{width:34px;height:34px}.dki-kutu svg{width:17px;height:17px}' +
 '.dki-pn{position:fixed;z-index:2147483645;padding:16px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,.12)}.dki-bas{font-size:13px}.dki-bd{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}.dki-bz{height:44px}' +
 '.dki-ort{position:fixed;inset:0;z-index:2147483644;background:rgba(0,0,0,.35)}}';
@@ -205,19 +205,30 @@ jQuery(owl).on('changed.owl.carousel', function (e) { var i = e.item && e.item.i
 }
 // \u0130lk a\u00e7\u0131l\u0131\u015f ipucu (telefon, oturumda bir kez): ekrandaki ilk \u00e7ok foto\u011frafl\u0131 kart\u0131n foto\u011fraf\u0131 ~56 px sola kay\u0131p geri gelir; "kayd\u0131r\u0131labilir" der.
 // Sonraki foto\u011fraf \u00f6nceden y\u00fckl\u00fc (\u00f6n y\u00fckleme) ve img'ye yaz\u0131l\u0131r ki bo\u015fluk g\u00f6r\u00fcnmesin. Animasyon Web Animations ile; bitince kayd\u0131r\u0131c\u0131n\u0131n kendi konumu aynen kal\u0131r.
+// \u0130lk a\u00e7\u0131l\u0131\u015f ipucu (telefon, oturumda bir kez): ekrandaki ilk \u00e7ok foto\u011frafl\u0131 kart\u0131n foto\u011fraf\u0131 ~56 px sola kay\u0131p geri gelir; "kayd\u0131r\u0131labilir" der.
+// Sayfan\u0131n TAM y\u00fcklenmesi beklenmez (d\u0131\u015f betikler y\u00fcz\u00fcnden 4 sn+ s\u00fcr\u00fcyordu, kullan\u0131c\u0131 "ge\u00e7 geliyor" dedi): kayd\u0131r\u0131c\u0131 haz\u0131r olur olmaz
+// (100 ms'de bir, en \u00e7ok 4 sn) sonraki foto\u011fraf indirilir ve inince (en \u00e7ok 600 ms beklenir) kayar. Web Animations; kayd\u0131r\u0131c\u0131n\u0131n konumu de\u011fi\u015fmez.
 function ipucu() {
 try { if (!window.matchMedia('(max-width:767px)').matches || sessionStorage.getItem('dki-ipucu')) return; } catch (e) { return; }
+var t0 = Date.now();
+(function dene() {
 var kart = [].slice.call(document.querySelectorAll('#ProductPageProductList .productImage')).filter(function (r) {
-var b = r.getBoundingClientRect(); return b.top >= 0 && b.bottom <= window.innerHeight + 40 && r.querySelector('.dki-ileri.dki-coklu');
+var b = r.getBoundingClientRect(); return b.top >= 0 && b.bottom <= window.innerHeight + 40 && r.querySelectorAll('.owl-item:not(.cloned)').length > 1;
 })[0];
-var stage = kart && kart.querySelector('.owl-stage'); if (!stage || !stage.animate) return;
-var sonraki = kart.querySelectorAll('.owl-item:not(.cloned) img.productSliderImage')[1];
-if (sonraki) { var u = sonraki.getAttribute('data-src'); if (u && /load\.gif/.test(sonraki.getAttribute('src') || '')) sonraki.setAttribute('src', u); }
+var stage = kart && kart.querySelector('.owl-stage');
+if (!stage || !stage.animate) { if (Date.now() - t0 < 4000) setTimeout(dene, 100); return; }
 try { sessionStorage.setItem('dki-ipucu', '1'); } catch (e) {}
+var sonraki = kart.querySelectorAll('.owl-item:not(.cloned) img.productSliderImage')[1], oynat = function () {
+if (oynat.oldu) return; oynat.oldu = 1;
 var t = getComputedStyle(stage).transform; t = (t && t !== 'none') ? t : '';
-setTimeout(function () { stage.animate([{ transform: t + ' translateX(0)' }, { transform: t + ' translateX(-56px)' }, { transform: t + ' translateX(0)' }], { duration: 1100, easing: 'cubic-bezier(.4,0,.2,1)' }); }, 600);
+stage.animate([{ transform: t + ' translateX(0)' }, { transform: t + ' translateX(-56px)' }, { transform: t + ' translateX(0)' }], { duration: 1000, easing: 'cubic-bezier(.4,0,.2,1)' });
+};
+var u = sonraki && sonraki.getAttribute('data-src');
+if (u && /load\.gif/.test(sonraki.getAttribute('src') || '')) { var on = new Image(); on.onload = function () { sonraki.setAttribute('src', u); setTimeout(oynat, 50); }; on.src = u; setTimeout(oynat, 600); }
+else setTimeout(oynat, 150);
+})();
 }
-if (document.readyState === 'complete') setTimeout(ipucu, 800); else window.addEventListener('load', function () { setTimeout(ipucu, 800); });
+setTimeout(ipucu, 300);
 function tara() { [].slice.call(document.querySelectorAll('.ItemOrj .productItem')).forEach(kartKur); }
 function basla() { tara(); setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 0); // bo\u015fluk kalk\u0131nca kart geni\u015fli\u011fi de\u011fi\u015fir: \u00f6nceden kurulmu\u015f foto\u011fraf kayd\u0131r\u0131c\u0131lar\u0131 yeni geni\u015fli\u011fe g\u00f6re yeniden \u00f6l\u00e7\u00fcls\u00fcn
 var bekleyen = 0; new MutationObserver(function () { if (bekleyen) return; bekleyen = 1; requestAnimationFrame(function () { bekleyen = 0; tara(); }); }).observe(document.body, { childList: true, subtree: true }); }
