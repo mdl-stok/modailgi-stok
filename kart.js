@@ -121,6 +121,7 @@ kutu.appendChild(kalp); favA.closest('.favori').classList.add('dki-gizli');
 ['click', 'mousedown', 'touchstart', 'touchend', 'pointerdown'].forEach(function (t) { kutu.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true }); }); // resim kayd\u0131r\u0131c\u0131s\u0131 (Owl) ve \u00fcr\u00fcn ba\u011flant\u0131s\u0131 tetiklenmesin
 resim.appendChild(kutu); kart.classList.add('dki-var');
 oklarKur(resim, ad);
+netlestir(resim);
 }
 var SVG_GERI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
 var SVG_ILERI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
@@ -144,6 +145,28 @@ x[0].addEventListener('click', function (e) { e.preventDefault(); e.stopPropagat
 resim.appendChild(x[0]);
 });
 jQuery(owl).on('initialized.owl.carousel changed.owl.carousel translated.owl.carousel refreshed.owl.carousel', function () { setTimeout(durum, 0); }); durum();
+}
+// Resim netli\u011fi: Ticimax'in AutoResize'\u0131 liste resimlerini Cloudflare'den kart\u0131n CSS geni\u015fli\u011finde (\u00f6r. width=343,quality=85, JPEG) istiyor; Retina/telefonda
+// 2-3 kat yo\u011fun ekranda bulan\u0131k g\u00f6r\u00fcn\u00fcyordu (2026-11-17 \u00f6l\u00e7\u00fcm: 215 resmin 209'u). Geni\u015flik ekran yo\u011funlu\u011fuyla (en \u00e7ok 2 kat) \u00e7arp\u0131l\u0131r, format=auto ile
+// taray\u0131c\u0131 AVIF/WebP al\u0131r, kalite 75: 686 px AVIF \u2248 343 px JPEG'in 1,4 kat\u0131; yo\u011funluk 1 olan ekranda bug\u00fcnk\u00fcnden k\u00fc\u00e7\u00fck.
+// \u00d6NEML\u0130: adres B\u0130R KEZ yaz\u0131l\u0131r ve resim `resize-banned` ile i\u015faretlenir; AutoResize i\u015faretli resme dokunmaz (Ticimax'in kendi ilk resimleri de b\u00f6yle gelir).
+// \u0130lk denemede \u00f6znitelik g\u00f6zlemcisiyle d\u00fczeltiyordum: AutoResize ile kar\u015f\u0131l\u0131kl\u0131 yeniden yazma sonsuz d\u00f6ng\u00fcye girip sayfay\u0131 kilitledi. G\u00f6zlemci KULLANMA.
+var YOG = Math.min(2, Math.max(1, window.devicePixelRatio || 1)), CDN = 'https://static.ticimax.cloud';
+function netAdres(u, gen) {
+if (!u) return u;
+var w = Math.min(1500, Math.ceil(gen * YOG / 50) * 50), seg = '/cdn-cgi/image/width=' + w + ',quality=75,format=auto/'; // 50'nin kat\u0131: ayn\u0131 boyut \u00f6nbellekten gelsin
+if (u.indexOf('/cdn-cgi/image/') > -1) return u.replace(/\/cdn-cgi\/image\/[^/]*\//, seg);
+if (u.indexOf(CDN + '/') === 0 && /\.(jpe?g|png|webp)$/i.test(u)) return CDN + seg + u.slice(CDN.length + 1);
+return u;
+}
+function netlestir(resim) {
+var gen = resim.getBoundingClientRect().width || 0; if (gen < 50) return;
+[].slice.call(resim.querySelectorAll('img.productSliderImage')).forEach(function (im) {
+im.setAttribute('resize-banned', ''); // \u00f6nce i\u015faretle: adres de\u011fi\u015fince AutoResize araya girmesin
+var ds = im.getAttribute('data-src'), src = im.getAttribute('src') || '';
+if (ds) { var y = netAdres(ds, gen); if (y !== ds) im.setAttribute('data-src', y); }
+if (src.indexOf('/cdn-cgi/image/') > -1) { var y2 = netAdres(src, gen); if (y2 !== src) im.setAttribute('src', y2); } // y\u00fcklenmi\u015f tam boy ilk resim yeniden indirilmez
+});
 }
 function tara() { [].slice.call(document.querySelectorAll('.ItemOrj .productItem')).forEach(kartKur); }
 function basla() { tara(); setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 0); // bo\u015fluk kalk\u0131nca kart geni\u015fli\u011fi de\u011fi\u015fir: \u00f6nceden kurulmu\u015f foto\u011fraf kayd\u0131r\u0131c\u0131lar\u0131 yeni geni\u015fli\u011fe g\u00f6re yeniden \u00f6l\u00e7\u00fcls\u00fcn
