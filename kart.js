@@ -121,7 +121,7 @@ kutu.appendChild(kalp); favA.closest('.favori').classList.add('dki-gizli');
 ['click', 'mousedown', 'touchstart', 'touchend', 'pointerdown'].forEach(function (t) { kutu.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true }); }); // resim kayd\u0131r\u0131c\u0131s\u0131 (Owl) ve \u00fcr\u00fcn ba\u011flant\u0131s\u0131 tetiklenmesin
 resim.appendChild(kutu); kart.classList.add('dki-var');
 oklarKur(resim, ad);
-netlestir(resim);
+// netlestir(resim); // KAPALI (2026-11-17): canl\u0131da kullan\u0131c\u0131 b\u00fcy\u00fck h\u0131z kayb\u0131 g\u00f6rd\u00fc; nedeni \u00f6l\u00e7\u00fclene kadar \u00e7a\u011fr\u0131lmaz
 }
 var SVG_GERI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
 var SVG_ILERI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
