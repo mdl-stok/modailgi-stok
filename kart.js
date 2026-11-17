@@ -42,6 +42,8 @@ var st = el('style'); st.textContent =
 '.productImage:hover .dki-kutu,.dki-kutu:focus-within,.productImage.dki-panelde .dki-kutu{opacity:1}.productImage:hover .dki-ok.dki-coklu,.dki-ok.dki-coklu:focus-visible{display:flex}.dki-iz{opacity:0;transition:opacity .15s}.productImage:hover .dki-iz{opacity:1}' +
 '}' +
 
+// Telefonda kart dar: fiyat + eski fiyat + renkler tek sat\u0131ra s\u0131\u011fm\u0131yor, renkler alta d\u00fc\u015f\u00fcp sa\u011fa yaslan\u0131nca da\u011f\u0131n\u0131k duruyordu. Telefonda renkler fiyat\u0131n alt\u0131nda ayr\u0131 sat\u0131rda, sola yasl\u0131, biraz k\u00fc\u00e7\u00fck
+'@media (max-width:767px){#ProductPageProductList .productItem .productDetail>.boxUrunlerContent{flex:0 0 100%;margin:6px 0 0!important;justify-content:flex-start}#ProductPageProductList .productItem .productDetail{padding-left:8px!important;padding-right:8px!important}#ProductPageProductList .productItem .boxUrunResimContent img{width:14px!important;height:14px!important}#ProductPageProductList .productItem .v-count{font-size:12px;line-height:14px;height:14px}}' +
 '@media (max-width:767px){.dki-kutu{right:6px;bottom:6px}.dki-kutu button{width:34px;height:34px}.dki-kutu svg{width:17px;height:17px}' +
 '.dki-pn{position:fixed;z-index:2147483645;padding:16px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,.12)}.dki-bas{font-size:13px}.dki-bd{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}.dki-bz{height:44px}' +
 '.dki-ort{position:fixed;inset:0;z-index:2147483644;background:rgba(0,0,0,.35)}}';
