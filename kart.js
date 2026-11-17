@@ -121,6 +121,7 @@ kutu.appendChild(kalp); favA.closest('.favori').classList.add('dki-gizli');
 ['click', 'mousedown', 'touchstart', 'touchend', 'pointerdown'].forEach(function (t) { kutu.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true }); }); // resim kayd\u0131r\u0131c\u0131s\u0131 (Owl) ve \u00fcr\u00fcn ba\u011flant\u0131s\u0131 tetiklenmesin
 resim.appendChild(kutu); kart.classList.add('dki-var');
 oklarKur(resim, ad);
+onYukle(resim);
 // netlestir(resim); // KAPALI (2026-11-17): canl\u0131da kullan\u0131c\u0131 b\u00fcy\u00fck h\u0131z kayb\u0131 g\u00f6rd\u00fc; nedeni \u00f6l\u00e7\u00fclene kadar \u00e7a\u011fr\u0131lmaz
 }
 var SVG_GERI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
@@ -167,6 +168,26 @@ var ds = im.getAttribute('data-src'), src = im.getAttribute('src') || '';
 if (ds) { var y = netAdres(ds, gen); if (y !== ds) im.setAttribute('data-src', y); }
 if (src.indexOf('/cdn-cgi/image/') > -1) { var y2 = netAdres(src, gen); if (y2 !== src) im.setAttribute('src', y2); } // y\u00fcklenmi\u015f tam boy ilk resim yeniden indirilmez
 });
+}
+// Sonraki foto\u011fraf\u0131 \u00f6nceden indir: Ticimax'in kayd\u0131r\u0131c\u0131s\u0131 2. ve sonraki foto\u011fraflar\u0131 ancak o foto\u011frafa ge\u00e7ilince indiriyor (load.gif bekliyor);
+// telefonda kayd\u0131r\u0131nca 2-3 sn bo\u015f g\u00f6r\u00fcn\u00fcyordu (2026-11-17 \u00f6l\u00e7\u00fcm 3,1 sn). Kart ekrana yakla\u015f\u0131nca yaln\u0131z B\u0130R sonraki foto\u011fraf, her ge\u00e7i\u015fte de
+// bir sonraki, taray\u0131c\u0131 \u00f6nbelle\u011fine indirilir (new Image; sayfadaki img'ye ve Ticimax'in adresine dokunulmaz: AutoResize ile d\u00f6ng\u00fc riski yok).
+// Maliyet: ekrana giren kart ba\u015f\u0131na bir k\u00fc\u00e7\u00fck resim (\u224811-17 KB); ilk a\u00e7\u0131l\u0131\u015f etkilenmez (taray\u0131c\u0131 bo\u015fta kal\u0131nca ba\u015flar).
+var onYuklenen = {}, gozcu = ('IntersectionObserver' in window) ? new IntersectionObserver(function (gs) {
+gs.forEach(function (g) { if (g.isIntersecting) { gozcu.unobserve(g.target); sonrakiniHazirla(g.target, 0); } });
+}, { rootMargin: '300px 0px' }) : null;
+function sonrakiniHazirla(resim, i) {
+var im = resim.querySelectorAll('.owl-item:not(.cloned) img.productSliderImage, .imageItem img.productSliderImage');
+var hedef = im[i + 1]; if (!hedef) return;
+var u = hedef.getAttribute('data-src'); if (!u || onYuklenen[u] || /load\.gif/.test(u)) return;
+onYuklenen[u] = 1; var on = new Image(); on.decoding = 'async'; on.src = u;
+}
+function onYukle(resim) {
+if (!gozcu || !window.jQuery) return;
+var owl = resim.querySelector('.productList-Image-Owl'); if (!owl) return;
+var bas = function () { (window.requestIdleCallback || function (f) { setTimeout(f, 300); })(function () { gozcu.observe(resim); }); };
+if (document.readyState === 'complete') bas(); else window.addEventListener('load', bas);
+jQuery(owl).on('changed.owl.carousel', function (e) { var i = e.item && e.item.index; if (typeof i === 'number') { var o = jQuery(owl).data('owl.carousel'); sonrakiniHazirla(resim, o ? o.relative(i) : i); } });
 }
 function tara() { [].slice.call(document.querySelectorAll('.ItemOrj .productItem')).forEach(kartKur); }
 function basla() { tara(); setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 0); // bo\u015fluk kalk\u0131nca kart geni\u015fli\u011fi de\u011fi\u015fir: \u00f6nceden kurulmu\u015f foto\u011fraf kayd\u0131r\u0131c\u0131lar\u0131 yeni geni\u015fli\u011fe g\u00f6re yeniden \u00f6l\u00e7\u00fcls\u00fcn
