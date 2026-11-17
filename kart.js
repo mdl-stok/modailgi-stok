@@ -53,6 +53,8 @@ var st = el('style'); st.textContent =
 
 // Telefonda kart dar: fiyat + eski fiyat + renkler tek sat\u0131ra s\u0131\u011fm\u0131yor, renkler alta d\u00fc\u015f\u00fcp sa\u011fa yaslan\u0131nca da\u011f\u0131n\u0131k duruyordu. Telefonda renkler fiyat\u0131n alt\u0131nda ayr\u0131 sat\u0131rda, sola yasl\u0131, fiyatla ayn\u0131 hizada (kullan\u0131c\u0131 karar\u0131), biraz k\u00fc\u00e7\u00fck
 '@media (max-width:767px){#ProductPageProductList .productItem .productDetail>.boxUrunlerContent{flex:0 0 100%;margin:6px 0 0!important;padding:0!important;justify-content:flex-start}#ProductPageProductList .productItem .boxUrunlerContainer{margin:0!important;padding:0!important}#ProductPageProductList .productItem .productDetail{padding-left:8px!important;padding-right:8px!important}#ProductPageProductList .productItem .boxUrunResimContent img{width:14px!important;height:14px!important}#ProductPageProductList .productItem .v-count{font-size:12px;line-height:14px;height:14px}}' +
+'.dki-ok .dki-k{display:none}' +
+'@media (max-width:767px){.dki-ok.dki-coklu{display:flex;width:28px;height:48px;margin-top:-24px;background:transparent;color:#111;filter:drop-shadow(0 0 1px rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.7))}.dki-ok:hover{background:transparent}.dki-ok svg:not(.dki-k){display:none}.dki-ok .dki-k{display:block}.dki-geri{left:0}.dki-ileri{right:0}.dki-ok[disabled]{opacity:0;pointer-events:none}}' +
 '@media (max-width:767px){.dki-kutu{right:6px;bottom:6px}.dki-kutu button{width:34px;height:34px}.dki-kutu svg{width:17px;height:17px}' +
 '.dki-pn{position:fixed;z-index:2147483645;padding:16px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,.12)}.dki-bas{font-size:13px}.dki-bd{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}.dki-bz{height:44px}' +
 '.dki-ort{position:fixed;inset:0;z-index:2147483644;background:rgba(0,0,0,.35)}}';
@@ -135,6 +137,9 @@ onYukle(resim);
 }
 var SVG_GERI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
 var SVG_ILERI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+// Telefonda kartta COS gibi k\u00fc\u00e7\u00fck, siyah, zeminsiz chevron (\u203a \u2039); masa\u00fcst\u00fcnde oklu kare kal\u0131r. \u0130kisi de d\u00fc\u011fmede, CSS se\u00e7er.
+var SVG_GERI_K = '<svg class="dki-k" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+var SVG_ILERI_K = '<svg class="dki-k" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
 var FARE = window.matchMedia('(hover:hover) and (pointer:fine)');
 function oklarKur(resim, ad) { // Ticimax'in resim kayd\u0131r\u0131c\u0131s\u0131 (Owl) zaten var; oklar onun \u00f6nceki/sonraki komutlar\u0131n\u0131 \u00e7a\u011f\u0131r\u0131r
 var owl = resim.querySelector('.productList-Image-Owl'); if (!owl || !window.jQuery) return;
@@ -142,7 +147,7 @@ var owl = resim.querySelector('.productList-Image-Owl'); if (!owl || !window.jQu
 resim.addEventListener('mousemove', function (e) { if (FARE.matches) e.stopPropagation(); }, true);
 var iz = el('div', 'dki-iz'), izc = el('i'); iz.setAttribute('aria-hidden', 'true'); iz.appendChild(izc); resim.appendChild(iz);
 var geri = el('button', 'dki-ok dki-geri'), ileri = el('button', 'dki-ok dki-ileri');
-geri.type = ileri.type = 'button'; geri.innerHTML = SVG_GERI; ileri.innerHTML = SVG_ILERI; geri.setAttribute('aria-label', '\u00d6nceki foto\u011fraf: ' + ad); ileri.setAttribute('aria-label', 'Sonraki foto\u011fraf: ' + ad);
+geri.type = ileri.type = 'button'; geri.innerHTML = SVG_GERI + SVG_GERI_K; ileri.innerHTML = SVG_ILERI + SVG_ILERI_K; geri.setAttribute('aria-label', '\u00d6nceki foto\u011fraf: ' + ad); ileri.setAttribute('aria-label', 'Sonraki foto\u011fraf: ' + ad);
 function durum() {
 var o = jQuery(owl).data('owl.carousel'); if (!o) return;
 var n = o.items().length, i = o.relative(o.current()); [geri, ileri].forEach(function (b) { b.classList.toggle('dki-coklu', n > 1); });
@@ -198,6 +203,21 @@ var bas = function () { (window.requestIdleCallback || function (f) { setTimeout
 if (document.readyState === 'complete') bas(); else window.addEventListener('load', bas);
 jQuery(owl).on('changed.owl.carousel', function (e) { var i = e.item && e.item.index; if (typeof i === 'number') { var o = jQuery(owl).data('owl.carousel'); sonrakiniHazirla(resim, o ? o.relative(i) : i); } });
 }
+// \u0130lk a\u00e7\u0131l\u0131\u015f ipucu (telefon, oturumda bir kez): ekrandaki ilk \u00e7ok foto\u011frafl\u0131 kart\u0131n foto\u011fraf\u0131 ~56 px sola kay\u0131p geri gelir; "kayd\u0131r\u0131labilir" der.
+// Sonraki foto\u011fraf \u00f6nceden y\u00fckl\u00fc (\u00f6n y\u00fckleme) ve img'ye yaz\u0131l\u0131r ki bo\u015fluk g\u00f6r\u00fcnmesin. Animasyon Web Animations ile; bitince kayd\u0131r\u0131c\u0131n\u0131n kendi konumu aynen kal\u0131r.
+function ipucu() {
+try { if (!window.matchMedia('(max-width:767px)').matches || sessionStorage.getItem('dki-ipucu')) return; } catch (e) { return; }
+var kart = [].slice.call(document.querySelectorAll('#ProductPageProductList .productImage')).filter(function (r) {
+var b = r.getBoundingClientRect(); return b.top >= 0 && b.bottom <= window.innerHeight + 40 && r.querySelector('.dki-ileri.dki-coklu');
+})[0];
+var stage = kart && kart.querySelector('.owl-stage'); if (!stage || !stage.animate) return;
+var sonraki = kart.querySelectorAll('.owl-item:not(.cloned) img.productSliderImage')[1];
+if (sonraki) { var u = sonraki.getAttribute('data-src'); if (u && /load\.gif/.test(sonraki.getAttribute('src') || '')) sonraki.setAttribute('src', u); }
+try { sessionStorage.setItem('dki-ipucu', '1'); } catch (e) {}
+var t = getComputedStyle(stage).transform; t = (t && t !== 'none') ? t : '';
+setTimeout(function () { stage.animate([{ transform: t + ' translateX(0)' }, { transform: t + ' translateX(-56px)' }, { transform: t + ' translateX(0)' }], { duration: 1100, easing: 'cubic-bezier(.4,0,.2,1)' }); }, 600);
+}
+if (document.readyState === 'complete') setTimeout(ipucu, 800); else window.addEventListener('load', function () { setTimeout(ipucu, 800); });
 function tara() { [].slice.call(document.querySelectorAll('.ItemOrj .productItem')).forEach(kartKur); }
 function basla() { tara(); setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 0); // bo\u015fluk kalk\u0131nca kart geni\u015fli\u011fi de\u011fi\u015fir: \u00f6nceden kurulmu\u015f foto\u011fraf kayd\u0131r\u0131c\u0131lar\u0131 yeni geni\u015fli\u011fe g\u00f6re yeniden \u00f6l\u00e7\u00fcls\u00fcn
 var bekleyen = 0; new MutationObserver(function () { if (bekleyen) return; bekleyen = 1; requestAnimationFrame(function () { bekleyen = 0; tara(); }); }).observe(document.body, { childList: true, subtree: true }); }
