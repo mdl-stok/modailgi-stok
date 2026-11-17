@@ -17,7 +17,7 @@ var st = el('style'); st.textContent =
 '.dki-pn *{box-sizing:border-box;font-family:inherit}.dki-ust{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.dki-bas{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.02em}' +
 '.dki-kp{display:flex;align-items:center;justify-content:center;width:32px;height:32px;margin:-6px -6px -6px 0;border:0;background:none;color:#000;cursor:pointer;padding:0}' +
 '.dki-bd{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}' +
-'.dki-bz{height:38px;border:1px solid #d7d7d8;background:#fff;color:#000;font-size:13px;cursor:pointer;padding:0 4px}.dki-bz:hover{border-color:#000}.dki-bz:disabled{color:#b0b0b0;text-decoration:line-through;border-color:#ececec;cursor:default}.dki-bz.dki-bekle{background:#000;color:#fff;border-color:#000}' +
+'.dki-bz{height:38px;border:1px solid #d7d7d8;background:#fff;color:#000;font-size:13px;cursor:pointer;padding:0 4px}.dki-bz:hover{border-color:#000}.dki-bz:disabled{color:#b0b0b0;text-decoration:line-through;border-color:#ececec;cursor:default}.dki-bz.dki-bekle{background:#000;color:#fff;border-color:#000}.dki-mesgul .dki-bz{pointer-events:none}.dki-mesgul .dki-bz:not(.dki-bekle){opacity:.5}' +
 '.dki-not{font-size:12.8px;color:#616161;padding:6px 0}.dki-git{display:inline-block;margin-top:10px;font-size:12.8px;color:#000;text-decoration:underline}' +
 '.dki-kp:focus-visible,.dki-bz:focus-visible,.dki-git:focus-visible{outline:1px solid #000;outline-offset:2px}' +
 // \u00dcr\u00fcn listesinin g\u00f6r\u00fcn\u00fcm\u00fc (renk kareleri, noktalar, bo\u015fluk) beti\u011fi beklemeden, kart i\u015faretine (dki-var) ba\u011fl\u0131 olmadan uygulan\u0131r: sayfa a\u00e7\u0131l\u0131rken eski g\u00f6r\u00fcn\u00fcm bir an bile g\u00f6r\u00fcnmesin
@@ -83,10 +83,10 @@ var bd = el('div', 'dki-bd'); bd.setAttribute('role', 'group'); bd.setAttribute(
 bedenler.forEach(function (v) {
 var z = el('button', 'dki-bz', v.name); z.type = 'button'; if (!(v.stockAmount > 0)) { z.disabled = true; z.setAttribute('aria-label', v.name + ' beden, t\u00fckendi'); }
 z.addEventListener('click', function () {
-if (z.disabled) return; [].slice.call(bd.children).forEach(function (x) { x.disabled = true; }); z.classList.add('dki-bekle'); z.textContent = '\u2026';
+if (z.disabled || bd.classList.contains('dki-mesgul')) return; bd.classList.add('dki-mesgul'); z.classList.add('dki-bekle'); // se\u00e7ilen beden siyah dolgulu kal\u0131r; simge (\u2026 / \u2713) g\u00f6sterilmez, Safari'de garip g\u00f6r\u00fcn\u00fcyordu
 sepeteEkle(p, v.variantId, function (sonuc) {
-if (sonuc === false) { z.classList.remove('dki-bekle'); z.textContent = v.name; [].slice.call(bd.children).forEach(function (x, i) { x.disabled = !(bedenler[i].stockAmount > 0); }); return; }
-z.textContent = '\u2713'; setTimeout(paneliKapa, 500); // Ticimax kendi sepet panelini a\u00e7ar
+if (sonuc === false) { z.classList.remove('dki-bekle'); bd.classList.remove('dki-mesgul'); return; }
+setTimeout(paneliKapa, 300); // Ticimax kendi sepet panelini a\u00e7ar
 });
 });
 bd.appendChild(z);
