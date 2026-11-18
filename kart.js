@@ -1,4 +1,14 @@
 (function () {
+// Telefonda \u00fcst men\u00fc sabitlenirken (tema Temp.js HeaderFixed: body'ye padding-top) sayfa 70 px kay\u0131yordu (CLS, 2026-11-18).
+// Bo\u015fluk body yerine formGlobal'e verilir: form kutusu yerinde kal\u0131r. Ana sayfa hari\u00e7 (orada \u00fcst men\u00fc zaten \u00fcstte y\u00fczer).
+if (window.__dkh || !window.matchMedia || !matchMedia('(max-width:767px)').matches) return; window.__dkh = 1;
+var b = document.body, f = document.getElementById('formGlobal');
+if (!b || !f || document.querySelector('#divIcerik.homepage')) return;
+var s = document.createElement('style'); s.textContent = '@media (max-width:767px){body.headerfixed{padding-top:0!important}}'; document.head.appendChild(s);
+function g() { f.style.paddingTop = b.classList.contains('headerfixed') && innerWidth < 768 ? (b.style.paddingTop || '') : ''; }
+new MutationObserver(g).observe(b, { attributes: true, attributeFilter: ['class', 'style'] }); g();
+})();
+(function () {
 if (window.__dki) return; window.__dki = 1;
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
 var SVG_ARTI = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg>';
