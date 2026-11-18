@@ -1,11 +1,12 @@
 (function () {
 // Telefonda \u00fcst men\u00fc sabitlenirken (tema Temp.js HeaderFixed: body'ye padding-top) sayfa 70 px kay\u0131yordu (CLS, 2026-11-18).
 // Bo\u015fluk body yerine formGlobal'e verilir: form kutusu yerinde kal\u0131r. Ana sayfa hari\u00e7 (orada \u00fcst men\u00fc zaten \u00fcstte y\u00fczer).
-if (window.__dkh || !window.matchMedia || !matchMedia('(max-width:767px)').matches) return; window.__dkh = 1;
+// Masa\u00fcst\u00fcnde de ayn\u0131 kayma vard\u0131 (0,04): 2026-11-18'den beri t\u00fcm geni\u015fliklerde.
+if (window.__dkh) return; window.__dkh = 1;
 var b = document.body, f = document.getElementById('formGlobal');
 if (!b || !f || document.querySelector('#divIcerik.homepage')) return;
-var s = document.createElement('style'); s.textContent = '@media (max-width:767px){body.headerfixed{padding-top:0!important}}'; document.head.appendChild(s);
-function g() { f.style.paddingTop = b.classList.contains('headerfixed') && innerWidth < 768 ? (b.style.paddingTop || '') : ''; }
+var s = document.createElement('style'); s.textContent = 'body.headerfixed{padding-top:0!important}'; document.head.appendChild(s);
+function g() { f.style.paddingTop = b.classList.contains('headerfixed') ? (b.style.paddingTop || '') : ''; }
 new MutationObserver(g).observe(b, { attributes: true, attributeFilter: ['class', 'style'] }); g();
 })();
 (function () {
