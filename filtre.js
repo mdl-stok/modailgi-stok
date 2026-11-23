@@ -1,5 +1,7 @@
 (function () {
 if (window.__dmf) return; window.__dmf = 1;
+function duoEv(n) { try { if (window.gtag) window.gtag('event', n); } catch (e) { } } // \u00f6l\u00e7\u00fcm: GA4'e yaln\u0131z olay ad\u0131 gider (ki\u015fisel veri yok); panel \u203a Site eklentileri
+var sonucsuzSay = 0; // panel her a\u00e7\u0131ld\u0131\u011f\u0131nda en \u00e7ok bir 'sonu\u00e7suz' olay\u0131
 var TR = 'tr-TR';
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
 function kucuk(s) { return String(s || '').toLocaleLowerCase(TR).replace(/\s+/g, ' ').trim(); }
@@ -241,14 +243,14 @@ var f = JSON.parse(JSON.stringify(window.filterModel.filter)), fo = (f.FilterObj
 if (s.rv.length) fo.push({ FilterType: 'secenek', FilterId: 1, FilterValues: s.rv.map(Number) }); if (s.bv.length) fo.push({ FilterType: 'secenek', FilterId: 2, FilterValues: s.bv.map(Number) });
 f.FilterObject = fo; f.MinPrice = s.min; f.MaxPrice = s.max;
 if (urunSay.ctl) urunSay.ctl.abort(); var ctl = urunSay.ctl = window.AbortController ? new AbortController() : null; // eski istek yan\u0131t\u0131 yenisinin \u00fcst\u00fcne yazmas\u0131n
-fetch('/api/product/GetProductList?FilterJson=' + encodeURIComponent(JSON.stringify(f)) + '&PagingJson=' + encodeURIComponent(JSON.stringify({ PageItemCount: 1, PageNumber: 1, OrderBy: 'KATEGORISIRA', OrderDirection: 'ASC' })), ctl ? { signal: ctl.signal } : {}).then(function (r) { return r.json(); }).then(function (j) { if (j && j.totalProductCount != null) goster.textContent = j.totalProductCount + ' \u00fcr\u00fcn\u00fc g\u00f6ster'; goster.classList.remove('dmf-yuk'); }).catch(function () {});
+fetch('/api/product/GetProductList?FilterJson=' + encodeURIComponent(JSON.stringify(f)) + '&PagingJson=' + encodeURIComponent(JSON.stringify({ PageItemCount: 1, PageNumber: 1, OrderBy: 'KATEGORISIRA', OrderDirection: 'ASC' })), ctl ? { signal: ctl.signal } : {}).then(function (r) { return r.json(); }).then(function (j) { if (j && j.totalProductCount != null) { goster.textContent = j.totalProductCount + ' \u00fcr\u00fcn\u00fc g\u00f6ster'; if (+j.totalProductCount === 0 && !sonucsuzSay++) duoEv('duo_filtre_sonucsuz'); } goster.classList.remove('dmf-yuk'); }).catch(function () {});
 } catch (e) { }
 }
-goster.addEventListener('click', function () { kapa(); }); // se\u00e7imler zaten uygulanm\u0131\u015f durumda; panel kapan\u0131r
+goster.addEventListener('click', function () { duoEv('duo_filtre_goster'); kapa(); }); // se\u00e7imler zaten uygulanm\u0131\u015f durumda; panel kapan\u0131r
 temizle.addEventListener('click', function () { [].concat(bedenKutu, fiyatKutu).forEach(function (k) { k.setAttribute('aria-pressed', 'false'); }); renkSec = {}; acikAile = null; renkCiz(); secim.diger = []; guncelle(); });
 
 var donus = null;
-function ac() { try { [].slice.call(document.querySelectorAll('.filterBlock.active')).forEach(function (x) { x.classList.remove('active'); }); } catch (x) { } /* eski Ticimax penceresi a\u00e7\u0131k kald\u0131ysa kapat */ donus = document.activeElement; ort.hidden = pn.hidden = false; document.body.classList.add('dmf-kilit'); guncelle(); requestAnimationFrame(function () { ort.classList.add('dmf-ac'); pn.classList.add('dmf-ac'); }); pn.focus(); }
+function ac() { duoEv('duo_filtre_ac'); sonucsuzSay = 0; try { [].slice.call(document.querySelectorAll('.filterBlock.active')).forEach(function (x) { x.classList.remove('active'); }); } catch (x) { } /* eski Ticimax penceresi a\u00e7\u0131k kald\u0131ysa kapat */ donus = document.activeElement; ort.hidden = pn.hidden = false; document.body.classList.add('dmf-kilit'); guncelle(); requestAnimationFrame(function () { ort.classList.add('dmf-ac'); pn.classList.add('dmf-ac'); }); pn.focus(); }
 function kapa() { ort.classList.remove('dmf-ac'); pn.classList.remove('dmf-ac'); document.body.classList.remove('dmf-kilit'); setTimeout(function () { ort.hidden = pn.hidden = true; }, 260); if (donus && donus.focus) donus.focus(); }
 kp.addEventListener('click', kapa); ort.addEventListener('click', kapa);
 pn.addEventListener('keydown', function (e) { if (e.key === 'Escape') kapa(); });
