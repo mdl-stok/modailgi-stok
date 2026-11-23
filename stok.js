@@ -1,6 +1,7 @@
 (function () {
 var ADRES = "https://mdl-stok.github.io/modailgi-stok/stok.json", ESKI_SAAT = 14; // 22:00 son yükleme + gece boşluğu: mağazalar kapalıyken görünür kalır
 if (window.__dms) return; window.__dms = 1;
+function duoEv(n) { try { if (window.gtag) window.gtag('event', n); } catch (e) { } } // ölçüm: GA4'e yalnız olay adı gider (kişisel veri yok); panel › Site eklentileri
 var mm = document.documentElement.innerHTML.match(/"stockCode":"([^"]+)"/); if (!mm) return;
 var kod = mm[1], TR = 'tr-TR';
 function ad(s) { return s.split(' ').map(function (w) { return w.charAt(0).toLocaleUpperCase(TR) + w.slice(1).toLocaleLowerCase(TR); }).join(' ').replace(/ Cad /, ' Cad. '); } // "İZMİR CAD MAĞAZA" → "İzmir Cad. Mağaza"
@@ -90,7 +91,7 @@ try { bak(document); } catch (e) { }
 return Math.round(h);
 }
 function yerlestir() { if (!TEL || !TEL.matches) { pn.style.top = pn.style.maxHeight = ''; return; } var h = altBosluk(), y = window.innerHeight - h; pn.style.top = Math.round(y / 2) + 'px'; pn.style.maxHeight = Math.max(240, Math.round(Math.min(y - 32, window.innerHeight * 0.85))) + 'px'; }
-function ac() { if (kucukResim && !img.getAttribute('src')) img.src = kucukResim; donus = document.activeElement; ort.hidden = pn.hidden = false; yerlestir(); document.body.classList.add('dms-kilit'); var s = secili(); goster(s && dugmeler[s] ? s : aktif); requestAnimationFrame(function () { ort.classList.add('dms-ac'); pn.classList.add('dms-ac'); }); pn.focus(); }
+function ac() { duoEv('duo_stok_ac'); if (kucukResim && !img.getAttribute('src')) img.src = kucukResim; donus = document.activeElement; ort.hidden = pn.hidden = false; yerlestir(); document.body.classList.add('dms-kilit'); var s = secili(); goster(s && dugmeler[s] ? s : aktif); requestAnimationFrame(function () { ort.classList.add('dms-ac'); pn.classList.add('dms-ac'); }); pn.focus(); }
 function kapa() { ort.classList.remove('dms-ac'); pn.classList.remove('dms-ac'); document.body.classList.remove('dms-kilit'); setTimeout(function () { ort.hidden = pn.hidden = true; }, 260); if (donus && donus.focus) donus.focus(); }
 a.addEventListener('click', ac); kp.addEventListener('click', kapa); ort.addEventListener('click', kapa);
 pn.addEventListener('keydown', function (e) {
