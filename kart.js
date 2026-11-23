@@ -11,6 +11,8 @@ new MutationObserver(g).observe(b, { attributes: true, attributeFilter: ['class'
 })();
 (function () {
 if (window.__dki) return; window.__dki = 1;
+function duoEv(n) { try { if (window.gtag) window.gtag('event', n); } catch (e) { } } // \u00f6l\u00e7\u00fcm: GA4'e yaln\u0131z olay ad\u0131 gider (ki\u015fisel veri yok); panel \u203a Site eklentileri
+try { window.addEventListener('error', function hataDinle(e) { if (/mdl-stok\.github\.io/.test((e && e.filename) || '')) { duoEv('duo_eklenti_hata'); window.removeEventListener('error', hataDinle); } }); } catch (e) { } // eklenti hatas\u0131: sayfa ba\u015f\u0131na bir kez
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
 var SVG_ARTI = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg>';
 var SVG_KALP = '<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3l-7.3-7.4a4.6 4.6 0 0 1 6.5-6.6l.8.8.8-.8a4.6 4.6 0 0 1 6.5 6.6z"/></svg>';
@@ -84,7 +86,7 @@ function sepeteEkle(p, variantId, bitti) {
 var c = window.cart && window.cart.add; if (!c || typeof c.createModel !== 'function') { location.href = p.url; return; }
 var oldu = false, son = function (b) { if (oldu) return; oldu = true; bitti(b); };
 c.model = c.createModel(); c.model.productUnique = p.productUnique; c.model.productId = p.productId; c.model.variantId = variantId; c.model.piece = 1; c.model.assortmentProductId = 0; c.model.productUrl = p.url;
-c.model.successCallBack = function () { son(true); }; try { c.execute(); } catch (e) { son(false); } setTimeout(function () { son(null); }, 6000);
+c.model.successCallBack = function () { duoEv('duo_kart_sepet'); son(true); }; try { c.execute(); } catch (e) { son(false); } setTimeout(function () { son(null); }, 6000);
 }
 
 var acik = null; // ayn\u0131 anda tek beden paneli
@@ -135,13 +137,13 @@ if (e.title) e.title = temizAd(e.title);
 var id = link.getAttribute('data-id'), favA = kart.querySelector('.favori a.favoriteslist'), ad = ((kart.querySelector('.productName') || {}).textContent || '').trim();
 var kutu = el('div', 'dki-kutu');
 var arti = el('button', 'dki-arti'); arti.type = 'button'; arti.innerHTML = SVG_ARTI; arti.setAttribute('aria-label', 'Sepete ekle: ' + ad); arti.setAttribute('aria-haspopup', 'dialog');
-arti.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); bedenPaneli(kart, resim, id, arti); });
+arti.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); duoEv('duo_kart_arti'); bedenPaneli(kart, resim, id, arti); });
 kutu.appendChild(arti);
 if (favA) {
 var kalp = el('button', 'dki-kalp'); kalp.type = 'button'; kalp.innerHTML = SVG_KALP;
 var guncelle = function () { var aktif = !/Pasif/i.test(favA.className) || favA.getAttribute('data-action') === '0'; kalp.setAttribute('aria-pressed', aktif ? 'true' : 'false'); kalp.setAttribute('aria-label', (aktif ? 'Favorilerden \u00e7\u0131kar: ' : 'Favorilere ekle: ') + ad); };
 guncelle(); new MutationObserver(guncelle).observe(favA, { attributes: true, attributeFilter: ['class', 'data-action'] });
-kalp.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); favA.click(); });
+kalp.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); duoEv('duo_kart_favori'); favA.click(); });
 kutu.appendChild(kalp); favA.closest('.favori').classList.add('dki-gizli');
 }
 ['click', 'mousedown', 'touchstart', 'touchend', 'pointerdown'].forEach(function (t) { kutu.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true }); }); // resim kayd\u0131r\u0131c\u0131s\u0131 (Owl) ve \u00fcr\u00fcn ba\u011flant\u0131s\u0131 tetiklenmesin
