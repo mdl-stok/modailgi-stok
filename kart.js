@@ -264,13 +264,15 @@ var bekleyen = 0; new MutationObserver(function () { if (bekleyen) return; bekle
 // Blok sayfada \u00fcr\u00fcn listesinden SONRA yer al\u0131r (Script Y\u00f6netimi \u203a T\u00fcm Sayfalar, body i\u00e7inde): liste haz\u0131rsa beklemeden ba\u015fla, de\u011filse sayfa y\u00fcklenince
 if (document.readyState !== 'loading' || document.querySelector('.ItemOrj .productItem')) basla(); else document.addEventListener('DOMContentLoaded', basla);
 })();
-// \u00dcr\u00fcn resmi b\u00fcy\u00fctme, YALNIZ MASA\u00dcST\u00dc (\u22651024 px), 2026-11-27 (kullan\u0131c\u0131 iste\u011fi; COS/Arket tarz\u0131): \u00fcr\u00fcn sayfas\u0131nda resme t\u0131klan\u0131nca Ticimax'in galerisi
+// \u00dcr\u00fcn resmi b\u00fcy\u00fctme, 2026-11-27 (kullan\u0131c\u0131 iste\u011fi; COS/Arket tarz\u0131; \u00f6nce masa\u00fcst\u00fc, ayn\u0131 g\u00fcn telefon): \u00fcr\u00fcn sayfas\u0131nda resme t\u0131klan\u0131nca Ticimax'in galerisi
 // (lightGallery: tek tek foto\u011fraf) yerine t\u00fcm foto\u011fraflar beyaz zeminde, ekran geni\u015fli\u011finde ALT ALTA a\u00e7\u0131l\u0131r; tek kayd\u0131rmayla hepsi g\u00f6r\u00fcl\u00fcr.
-// Solda k\u00fc\u00e7\u00fck resimler (t\u0131klay\u0131nca o foto\u011frafa kayar, g\u00f6r\u00fcnen foto\u011fraf\u0131nki i\u015faretli), sa\u011f \u00fcstte "Kapat" (Esc de kapat\u0131r).
-// Telefon/tablet (<1024 px) ve video \u00f6\u011feleri dokunulmadan Ticimax galerisine gider. Bir hata olursa t\u0131klama Ticimax galerisine b\u0131rak\u0131l\u0131r.
+// Masa\u00fcst\u00fc (\u22651024 px): solda k\u00fc\u00e7\u00fck resimler (t\u0131klay\u0131nca o foto\u011frafa kayar, g\u00f6r\u00fcnen foto\u011fraf\u0131nki i\u015faretli). Telefon/tablet: k\u00fc\u00e7\u00fck resim yok, foto\u011fraflar
+// ekran geni\u015fli\u011finde alt alta (Arket telefon d\u00fczeni); b\u00fcy\u00fctme telefonun kendi iki parmak hareketiyle (sitenin viewport'u engellemiyor).
+// Sa\u011f \u00fcstte "Kapat"; Esc ve taray\u0131c\u0131n\u0131n GER\u0130 tu\u015fu da kapat\u0131r (a\u00e7\u0131l\u0131\u015fta ge\u00e7mi\u015fe bir ad\u0131m eklenir; telefonda geri = sayfadan \u00e7\u0131kmas\u0131n).
+// Video \u00f6\u011feleri Ticimax galerisine gider. Bir hata olursa t\u0131klama Ticimax galerisine b\u0131rak\u0131l\u0131r. Kayd\u0131rma s\u0131ras\u0131nda (Owl s\u00fcr\u00fckleme) gelen t\u0131klama say\u0131lmaz.
 (function () {
 if (window.__dkz) return; window.__dkz = 1;
-var MASA = window.matchMedia('(min-width:1024px)'), RESIM = /\.(jpe?g|png|webp)(\?|$)/i;
+var RESIM = /\.(jpe?g|png|webp)(\?|$)/i, gecmis = false, dx = 0, dy = 0, sx = 0, sy = 0;
 var css = '.dkz{position:fixed;inset:0;z-index:1000000;background:#fff;display:none}.dkz.dkz-ac{display:block}' +
 '.dkz-kay{position:absolute;top:0;bottom:0;left:112px;right:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;outline:0}.dkz-kay::-webkit-scrollbar{display:none}' +
 '.dkz-kay img{display:block;width:100%;height:auto;margin:0 0 2px;background:#f6f6f6}' +
@@ -279,6 +281,7 @@ var css = '.dkz{position:fixed;inset:0;z-index:1000000;background:#fff;display:n
 '.dkz-kuc button img{display:block;width:100%;height:auto}.dkz-kuc button:hover,.dkz-kuc button.dkz-on{opacity:1;outline:1px solid #000}.dkz-kuc button:focus-visible{outline:2px solid #000}' +
 '.dkz-x{position:absolute;top:22px;right:28px;display:flex;align-items:center;gap:8px;padding:7px 14px 7px 12px;border:0;border-radius:0;background:rgba(255,255,255,.92);color:#000;font:14px/20px Karla,sans-serif;cursor:pointer;z-index:2}' +
 '.dkz-x span{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1px solid #000;border-radius:50%}.dkz-x:focus-visible{outline:2px solid #000}' +
+'@media (max-width:1023px){.dkz-kuc{display:none}.dkz-kay{left:0}.dkz-x{top:max(12px,env(safe-area-inset-top));right:12px;padding:8px 12px 8px 10px}}' +
 'body.dkz-acik{overflow:hidden}body.dkz-acik #back-to-top,body.dkz-acik .ins-preview-wrapper,body.dkz-acik .adminEditButton{display:none!important}';
 var stil = document.createElement('style'); stil.textContent = css; document.head.appendChild(stil);
 var kat = null, kay = null, kuc = null, dugmeler = [], resimler = [], donus = null, kare = 0;
@@ -292,7 +295,7 @@ kare = 0; if (!kay) return; var y = kay.scrollTop + kay.clientHeight * 0.4, i, s
 for (i = 0; i < resimler.length; i++) { if (resimler[i].offsetTop <= y) s = i; }
 dugmeler.forEach(function (d, k) { d.classList.toggle('dkz-on', k === s); });
 }
-function kapat() { if (!kat) return; kat.classList.remove('dkz-ac'); document.body.classList.remove('dkz-acik'); kat.innerHTML = ''; resimler = []; dugmeler = []; if (donus && donus.focus) donus.focus({ preventScroll: true }); }
+function kapat() { if (!kat || !kat.classList.contains('dkz-ac')) return; gecmis = false; kat.classList.remove('dkz-ac'); document.body.classList.remove('dkz-acik'); kat.innerHTML = ''; resimler = []; dugmeler = []; if (donus && donus.focus) donus.focus({ preventScroll: true }); }
 function ac(l, i, kaynak) {
 if (!kat) { kat = document.createElement('div'); kat.className = 'dkz'; kat.setAttribute('role', 'dialog'); kat.setAttribute('aria-modal', 'true'); kat.setAttribute('aria-label', '\u00dcr\u00fcn foto\u011fraflar\u0131'); document.body.appendChild(kat); }
 donus = kaynak; kat.innerHTML = '';
@@ -304,17 +307,21 @@ var d = document.createElement('button'); d.type = 'button'; d.setAttribute('ari
 var t = document.createElement('img'); t.alt = ''; t.loading = 'lazy'; t.src = kucukAdres(u); d.appendChild(t);
 d.addEventListener('click', function () { kay.scrollTo({ top: resimler[k].offsetTop, behavior: 'smooth' }); }); kuc.appendChild(d); dugmeler.push(d);
 });
-var x = document.createElement('button'); x.type = 'button'; x.className = 'dkz-x'; x.innerHTML = '<span aria-hidden="true"><svg width="8" height="8" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.4"><path d="M1 1l8 8M9 1L1 9"/></svg></span>Kapat'; x.addEventListener('click', kapat);
+var x = document.createElement('button'); x.type = 'button'; x.className = 'dkz-x'; x.innerHTML = '<span aria-hidden="true"><svg width="8" height="8" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.4"><path d="M1 1l8 8M9 1L1 9"/></svg></span>Kapat'; x.addEventListener('click', function () { if (gecmis) history.back(); else kapat(); }); // ge\u00e7mi\u015f ad\u0131m\u0131 varsa geri al (popstate kapat\u0131r)
 kat.appendChild(kuc); kat.appendChild(kay); kat.appendChild(x);
 kay.addEventListener('scroll', function () { if (!kare) { kare = 1; requestAnimationFrame(isaretle); } }, { passive: true });
 document.body.classList.add('dkz-acik'); kat.classList.add('dkz-ac');
+try { history.pushState({ dkz: 1 }, ''); gecmis = true; } catch (h) { gecmis = false; }
 kay.scrollTop = resimler[i] ? resimler[i].offsetTop : 0; isaretle(); kay.focus({ preventScroll: true }); // klavye \u2191 \u2193 / bo\u015fluk ile kayd\u0131rma
 }
-document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && kat && kat.classList.contains('dkz-ac')) kapat(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && kat && kat.classList.contains('dkz-ac')) { if (gecmis) history.back(); else kapat(); } });
+window.addEventListener('popstate', function () { if (kat && kat.classList.contains('dkz-ac')) { gecmis = false; kapat(); } });
+document.addEventListener('touchstart', function (e) { var t = e.touches && e.touches[0]; if (t) { sx = t.clientX; sy = t.clientY; dx = dy = 0; } }, { passive: true, capture: true });
+document.addEventListener('touchmove', function (e) { var t = e.touches && e.touches[0]; if (t) { dx = Math.max(dx, Math.abs(t.clientX - sx)); dy = Math.max(dy, Math.abs(t.clientY - sy)); } }, { passive: true, capture: true });
 // Ticimax galerisinden \u00d6NCE yakala (yakalama a\u015famas\u0131): masa\u00fcst\u00fc \u0131zgaras\u0131ndaki foto\u011fraf (#divProductGalleryThumb .thumb-item) ya da kayd\u0131r\u0131c\u0131daki a.lightItem
 window.addEventListener('click', function (e) {
 try {
-if (!MASA.matches || e.button) return;
+if (e.button || dx > 10 || dy > 10) return; // s\u00fcr\u00fckleme sonras\u0131 t\u0131klama: foto\u011fraf kayd\u0131r\u0131c\u0131s\u0131na kals\u0131n
 var t = e.target && e.target.closest && e.target.closest('#divProductGalleryThumb .thumb-item, a.lightItem'); if (!t) return;
 var l = liste(); if (!l.length) return;
 var i = 0;
