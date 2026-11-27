@@ -266,8 +266,9 @@ if (document.readyState !== 'loading' || document.querySelector('.ItemOrj .produ
 })();
 // \u00dcr\u00fcn resmi b\u00fcy\u00fctme, 2026-11-27 (kullan\u0131c\u0131 iste\u011fi; COS/Arket tarz\u0131; \u00f6nce masa\u00fcst\u00fc, ayn\u0131 g\u00fcn telefon): \u00fcr\u00fcn sayfas\u0131nda resme t\u0131klan\u0131nca Ticimax'in galerisi
 // (lightGallery: tek tek foto\u011fraf) yerine t\u00fcm foto\u011fraflar beyaz zeminde, ekran geni\u015fli\u011finde ALT ALTA a\u00e7\u0131l\u0131r; tek kayd\u0131rmayla hepsi g\u00f6r\u00fcl\u00fcr.
-// Masa\u00fcst\u00fc (\u22651024 px): solda k\u00fc\u00e7\u00fck resimler (t\u0131klay\u0131nca o foto\u011frafa kayar, g\u00f6r\u00fcnen foto\u011fraf\u0131nki i\u015faretli). Telefon/tablet: k\u00fc\u00e7\u00fck resim yok, foto\u011fraflar
-// ekran geni\u015fli\u011finde alt alta (Arket telefon d\u00fczeni); b\u00fcy\u00fctme telefonun kendi iki parmak hareketiyle (sitenin viewport'u engellemiyor).
+// Masa\u00fcst\u00fc (\u22651024 px): solda k\u00fc\u00e7\u00fck resimler (t\u0131klay\u0131nca o foto\u011frafa kayar, g\u00f6r\u00fcnen foto\u011fraf\u0131nki i\u015faretli).
+// Telefon/tablet: alt alta d\u00fczen \u00fcr\u00fcn kart\u0131yla ayn\u0131 g\u00f6r\u00fcnd\u00fc\u011f\u00fc i\u00e7in (kullan\u0131c\u0131 geri bildirimi) foto\u011fraf 2 KAT B\u00dcY\u00dcT\u00dcLM\u00dc\u015e a\u00e7\u0131l\u0131r, dokunulan noktaya ortalan\u0131r;
+// parmakla her y\u00f6ne gezdirilir, dokununca ekrana s\u0131\u011far / yeniden b\u00fcy\u00fcr; altta k\u00fc\u00e7\u00fck resim \u015feridiyle foto\u011fraf de\u011fi\u015fir. \u0130ki parmak b\u00fcy\u00fctme de a\u00e7\u0131k.
 // Sa\u011f \u00fcstte "Kapat"; Esc ve taray\u0131c\u0131n\u0131n GER\u0130 tu\u015fu da kapat\u0131r (a\u00e7\u0131l\u0131\u015fta ge\u00e7mi\u015fe bir ad\u0131m eklenir; telefonda geri = sayfadan \u00e7\u0131kmas\u0131n).
 // Video \u00f6\u011feleri Ticimax galerisine gider. Bir hata olursa t\u0131klama Ticimax galerisine b\u0131rak\u0131l\u0131r. Kayd\u0131rma s\u0131ras\u0131nda (Owl s\u00fcr\u00fckleme) gelen t\u0131klama say\u0131lmaz.
 (function () {
@@ -282,6 +283,10 @@ var css = '.dkz{position:fixed;inset:0;z-index:1000000;background:#fff;display:n
 '.dkz-x{position:absolute;top:22px;right:28px;display:flex;align-items:center;gap:8px;padding:7px 14px 7px 12px;border:0;border-radius:0;background:rgba(255,255,255,.92);color:#000;font:14px/20px Karla,sans-serif;cursor:pointer;z-index:2}' +
 '.dkz-x span{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1px solid #000;border-radius:50%}.dkz-x:focus-visible{outline:2px solid #000}' +
 '@media (max-width:1023px){.dkz-kuc{display:none}.dkz-kay{left:0}.dkz-x{top:max(12px,env(safe-area-inset-top));right:12px;padding:8px 12px 8px 10px}}' +
+'.dkz-tek{position:absolute;top:0;left:0;right:0;bottom:76px;overflow:auto;overscroll-behavior:contain;touch-action:manipulation;scrollbar-width:none;-webkit-overflow-scrolling:touch}.dkz-tek::-webkit-scrollbar{display:none}' +
+'.dkz-tek img{display:block;max-width:none;height:auto;background:#f6f6f6;cursor:zoom-out}.dkz-tek.dkz-sig{display:flex;align-items:center}.dkz-tek.dkz-sig img{cursor:zoom-in}' +
+'.dkz-serit{position:absolute;left:0;right:0;bottom:0;height:76px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));display:flex;gap:6px;overflow-x:auto;background:#fff;scrollbar-width:none}.dkz-serit::-webkit-scrollbar{display:none}' +
+'.dkz-serit button{flex:0 0 auto;width:44px;height:64px;padding:0;border:0;border-radius:0;background:#f6f6f6;opacity:.5}.dkz-serit button img{display:block;width:100%;height:100%;object-fit:cover}.dkz-serit button.dkz-on{opacity:1;outline:1px solid #000;outline-offset:-1px}' +
 'body.dkz-acik{overflow:hidden}body.dkz-acik #back-to-top,body.dkz-acik .ins-preview-wrapper,body.dkz-acik .adminEditButton{display:none!important}';
 var stil = document.createElement('style'); stil.textContent = css; document.head.appendChild(stil);
 var kat = null, kay = null, kuc = null, dugmeler = [], resimler = [], donus = null, kare = 0;
@@ -296,7 +301,25 @@ for (i = 0; i < resimler.length; i++) { if (resimler[i].offsetTop <= y) s = i; }
 dugmeler.forEach(function (d, k) { d.classList.toggle('dkz-on', k === s); });
 }
 function kapat() { if (!kat || !kat.classList.contains('dkz-ac')) return; gecmis = false; kat.classList.remove('dkz-ac'); document.body.classList.remove('dkz-acik'); kat.innerHTML = ''; resimler = []; dugmeler = []; if (donus && donus.focus) donus.focus({ preventScroll: true }); }
-function ac(l, i, kaynak) {
+var TEL = window.matchMedia('(max-width:1023px)'), ZOOM = 2;
+function acTel(l, i, kaynak, px, py) {
+if (!kat) { kat = document.createElement('div'); kat.className = 'dkz'; kat.setAttribute('role', 'dialog'); kat.setAttribute('aria-modal', 'true'); kat.setAttribute('aria-label', '\u00dcr\u00fcn foto\u011fraflar\u0131'); document.body.appendChild(kat); }
+donus = kaynak; kat.innerHTML = '';
+var tek = document.createElement('div'); tek.className = 'dkz-tek'; var r = document.createElement('img'); r.width = 1000; r.height = 1500; r.decoding = 'async'; tek.appendChild(r);
+var serit = document.createElement('div'); serit.className = 'dkz-serit'; var z = ZOOM, cur = -1;
+function konum(fx, fy) { var w = tek.clientWidth * z, h = w * 1.5; tek.scrollLeft = Math.max(0, fx * w - tek.clientWidth / 2); tek.scrollTop = Math.max(0, fy * h - tek.clientHeight / 2); }
+function olcek(fx, fy) { r.style.width = (z * 100) + '%'; tek.classList.toggle('dkz-sig', z === 1); if (z > 1) konum(fx, fy); else { tek.scrollLeft = 0; tek.scrollTop = 0; } }
+function goster(k, fx, fy) { cur = k; r.alt = '\u00dcr\u00fcn foto\u011fraf\u0131 ' + (k + 1); r.src = l[k]; z = ZOOM; olcek(fx, fy); dugmeler.forEach(function (d, j) { d.classList.toggle('dkz-on', j === k); }); if (dugmeler[k] && dugmeler[k].scrollIntoView) dugmeler[k].scrollIntoView({ block: 'nearest', inline: 'center' }); }
+r.addEventListener('click', function (e) { if (dx > 10 || dy > 10) return; var b = r.getBoundingClientRect(), fx = (e.clientX - b.left) / b.width, fy = (e.clientY - b.top) / b.height; z = z === 1 ? ZOOM : 1; olcek(Math.min(1, Math.max(0, fx)), Math.min(1, Math.max(0, fy))); });
+l.forEach(function (u, k) { var d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', (k + 1) + '. foto\u011fraf'); var t = document.createElement('img'); t.alt = ''; t.loading = 'lazy'; t.src = kucukAdres(u); d.appendChild(t); d.addEventListener('click', function () { goster(k, 0.5, 0.35); }); serit.appendChild(d); dugmeler.push(d); });
+var x = document.createElement('button'); x.type = 'button'; x.className = 'dkz-x'; x.innerHTML = '<span aria-hidden="true"><svg width="8" height="8" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.4"><path d="M1 1l8 8M9 1L1 9"/></svg></span>Kapat'; x.addEventListener('click', function () { if (gecmis) history.back(); else kapat(); });
+kat.appendChild(tek); kat.appendChild(serit); kat.appendChild(x);
+document.body.classList.add('dkz-acik'); kat.classList.add('dkz-ac');
+try { history.pushState({ dkz: 1 }, ''); gecmis = true; } catch (h) { gecmis = false; }
+goster(i, px, py);
+}
+function ac(l, i, kaynak, px, py) {
+if (TEL.matches) return acTel(l, i, kaynak, px == null ? 0.5 : px, py == null ? 0.35 : py);
 if (!kat) { kat = document.createElement('div'); kat.className = 'dkz'; kat.setAttribute('role', 'dialog'); kat.setAttribute('aria-modal', 'true'); kat.setAttribute('aria-label', '\u00dcr\u00fcn foto\u011fraflar\u0131'); document.body.appendChild(kat); }
 donus = kaynak; kat.innerHTML = '';
 kuc = document.createElement('div'); kuc.className = 'dkz-kuc';
@@ -330,7 +353,8 @@ else i = [].slice.call(document.querySelectorAll('#divProductGalleryThumb .thumb
 if (i < 0 || i >= l.length || !RESIM.test(l[i])) return; // video vb.: Ticimax galerisi a\u00e7s\u0131n
 var resimL = l.filter(function (u) { return RESIM.test(u); }); i = resimL.indexOf(l[i]);
 e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-ac(resimL, i, t);
+var hb = (e.target && e.target.tagName === 'IMG' ? e.target : t).getBoundingClientRect(), px = hb.width ? (e.clientX - hb.left) / hb.width : 0.5, py = hb.height ? (e.clientY - hb.top) / hb.height : 0.35;
+ac(resimL, i, t, Math.min(1, Math.max(0, px)), Math.min(1, Math.max(0, py)));
 } catch (h) { /* hata: t\u0131klama Ticimax galerisine kal\u0131r */ }
 }, true);
 })();
