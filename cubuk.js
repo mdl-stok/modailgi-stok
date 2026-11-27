@@ -1,4 +1,4 @@
-/* duo-cubuk e255e146 2026-11-27T13:17 */
+/* duo-cubuk e255e146 2026-11-27T13:24 */
 (function () {
 var C = {"kapali":false,"sure":4000,"bg":"#ffffff","fg":"#1a1a1a","vurgu":"#1a1a1a","kenar":"#ebebeb","buyukHarf":true,"oklar":false,"yapiskan":true,"mesajlar":[{"m":"**Efsane Cuma** [[· %50'ye varan ]]· {sayac}","l":"/outlet","bas":"","bit":"2026-11-30T23:59:00+03:00"},{"m":"Peşin fiyatına 4 taksit","l":"","bas":"","bit":""},{"m":"4.500 ₺ ve üzeri ücretsiz teslimat","l":"","bas":"","bit":""}]};
 if (C.kapali || window.__dcb) return; window.__dcb = 1;
@@ -17,7 +17,7 @@ function kur() {
 if (document.getElementById('dcb')) return;
 var st = document.createElement('style'); st.id = 'dcb-st';
 var Y = C.yapiskan !== false;
-st.textContent = (Y ? '#dcb-yer{height:34px}@media (max-width:480px){#dcb-yer{height:32px}}' : '') + '#dcb{' + (Y ? 'position:fixed;top:0;left:0;right:0;z-index:1001;' : 'position:relative;z-index:1;') + 'background:' + C.bg + ';color:' + C.fg + ';height:34px;display:flex;align-items:center;justify-content:center;font-family:inherit;font-size:11px;font-weight:400;line-height:1;letter-spacing:.16em;' + (C.buyukHarf ? 'text-transform:uppercase;' : '') + 'overflow:hidden;contain:layout paint style;border-bottom:1px solid ' + C.kenar + ';box-sizing:border-box}' +
+st.textContent = (Y ? '#dcb-yer{height:34px}@media (max-width:480px){#dcb-yer{height:32px}}@media (min-width:768px){.detaySticky.fixed{top:34px!important}}' : '') + '#dcb{' + (Y ? 'position:fixed;top:0;left:0;right:0;z-index:1001;' : 'position:relative;z-index:1;') + 'background:' + C.bg + ';color:' + C.fg + ';height:34px;display:flex;align-items:center;justify-content:center;font-family:inherit;font-size:11px;font-weight:400;line-height:1;letter-spacing:.16em;' + (C.buyukHarf ? 'text-transform:uppercase;' : '') + 'overflow:hidden;contain:layout paint style;border-bottom:1px solid ' + C.kenar + ';box-sizing:border-box}' +
 '#dcb .dcb-m{position:absolute;left:16px;right:16px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transition:opacity .6s ease;pointer-events:none;color:inherit;text-decoration:none}' +
 '#dcb .dcb-m.on{opacity:1;pointer-events:auto}#dcb.ok .dcb-m{left:44px;right:44px}#dcb .dcb-m b{font-weight:500;color:' + C.vurgu + '}' +
 '#dcb button{position:absolute;top:0;bottom:0;width:40px;border:0;background:transparent;color:inherit;cursor:pointer;opacity:.4;padding:0}' +
@@ -41,8 +41,7 @@ setInterval(function () { if (!dur && !document.hidden) goster(i + 1); }, C.sure
 if (sayaclar.length) { say(); setInterval(function () { if (!document.hidden) say(); }, 1000); }
 goster(0); if (Y) { var yer = document.createElement('div'); yer.id = 'dcb-yer'; yer.setAttribute('aria-hidden', 'true'); document.body.insertBefore(yer, document.body.firstChild); } document.body.insertBefore(b, document.body.firstChild); ek('duyuru_cubugu_goster', L[0].m);
 var h = document.querySelector('header#headerNew') || document.querySelector('header'), dar = window.matchMedia && matchMedia('(max-width:480px)'), bh = dar && dar.matches ? 32 : 34, sabit = !!h && getComputedStyle(h).position === 'fixed', bekle = false, son = -1;
-function ayar() { bekle = false; if (!h) return; var f = getComputedStyle(h).position === 'fixed', v = !f ? '' : (Y ? bh : Math.max(0, bh - (window.pageYOffset || 0))) + 'px'; if (v !== son) { son = v; h.style.top = v; }
-if (Y) for (var d = document.querySelectorAll('.detaySticky'), j = 0; j < d.length; j++) { var e = d[j], ef = getComputedStyle(e).position === 'fixed', ev = ef && (e.style.top || getComputedStyle(e).top === '0px') ? bh + 'px' : ''; if (e.style.top !== ev) e.style.top = ev; } }
+function ayar() { bekle = false; if (!h) return; var f = getComputedStyle(h).position === 'fixed', v = !f ? '' : (Y ? bh : Math.max(0, bh - (window.pageYOffset || 0))) + 'px'; if (h.style.top !== v) h.style.top = v; } // tema da top yazıyor: önbellek değil gerçek değerle karşılaştır
 function planla() { if (!bekle) { bekle = true; requestAnimationFrame(ayar); } }
 addEventListener('scroll', planla, { passive: true });
 addEventListener('resize', function () { bh = dar && dar.matches ? 32 : 34; son = -1; planla(); });
