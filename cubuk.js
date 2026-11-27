@@ -1,4 +1,4 @@
-/* duo-cubuk e255e146 */
+/* duo-cubuk e255e146 2026-11-27T13:17 */
 (function () {
 var C = {"kapali":false,"sure":4000,"bg":"#ffffff","fg":"#1a1a1a","vurgu":"#1a1a1a","kenar":"#ebebeb","buyukHarf":true,"oklar":false,"yapiskan":true,"mesajlar":[{"m":"**Efsane Cuma** [[· %50'ye varan ]]· {sayac}","l":"/outlet","bas":"","bit":"2026-11-30T23:59:00+03:00"},{"m":"Peşin fiyatına 4 taksit","l":"","bas":"","bit":""},{"m":"4.500 ₺ ve üzeri ücretsiz teslimat","l":"","bas":"","bit":""}]};
 if (C.kapali || window.__dcb) return; window.__dcb = 1;
@@ -41,7 +41,8 @@ setInterval(function () { if (!dur && !document.hidden) goster(i + 1); }, C.sure
 if (sayaclar.length) { say(); setInterval(function () { if (!document.hidden) say(); }, 1000); }
 goster(0); if (Y) { var yer = document.createElement('div'); yer.id = 'dcb-yer'; yer.setAttribute('aria-hidden', 'true'); document.body.insertBefore(yer, document.body.firstChild); } document.body.insertBefore(b, document.body.firstChild); ek('duyuru_cubugu_goster', L[0].m);
 var h = document.querySelector('header#headerNew') || document.querySelector('header'), dar = window.matchMedia && matchMedia('(max-width:480px)'), bh = dar && dar.matches ? 32 : 34, sabit = !!h && getComputedStyle(h).position === 'fixed', bekle = false, son = -1;
-function ayar() { bekle = false; if (!h) return; var f = getComputedStyle(h).position === 'fixed', v = !f ? '' : (Y ? bh : Math.max(0, bh - (window.pageYOffset || 0))) + 'px'; if (v === son) return; son = v; h.style.top = v; }
+function ayar() { bekle = false; if (!h) return; var f = getComputedStyle(h).position === 'fixed', v = !f ? '' : (Y ? bh : Math.max(0, bh - (window.pageYOffset || 0))) + 'px'; if (v !== son) { son = v; h.style.top = v; }
+if (Y) for (var d = document.querySelectorAll('.detaySticky'), j = 0; j < d.length; j++) { var e = d[j], ef = getComputedStyle(e).position === 'fixed', ev = ef && (e.style.top || getComputedStyle(e).top === '0px') ? bh + 'px' : ''; if (e.style.top !== ev) e.style.top = ev; } }
 function planla() { if (!bekle) { bekle = true; requestAnimationFrame(ayar); } }
 addEventListener('scroll', planla, { passive: true });
 addEventListener('resize', function () { bh = dar && dar.matches ? 32 : 34; son = -1; planla(); });
