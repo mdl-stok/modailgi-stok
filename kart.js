@@ -71,6 +71,10 @@ var st = el('style'); st.textContent =
 // \u00dcr\u00fcn sayfas\u0131 alt bloklar\u0131 (Ticimax "G\u00f6r\u00fcn\u00fcm\u00fc Tamamla" vb.): ba\u015fl\u0131k, alt\u0131ndaki Insider "Kategorinin \u00c7ok Satanlar\u0131" ba\u015fl\u0131\u011f\u0131yla ayn\u0131 (\u00f6l\u00e7\u00fcld\u00fc 2026-11-26:
 // Insider Karla 15px/700, harf aral\u0131\u011f\u0131 .9px, b\u00fcy\u00fck harf; Ticimax 20px/500). Geni\u015f ekranda (\u22481920) Ticimax ayn\u0131 blo\u011fu 'ProductList PlSc_4' s\u0131n\u0131f\u0131yla \u00e7iziyor (kategoriBlock yok); kapsay\u0131c\u0131 #UrunAksesuarDiv iki d\u00fczende de ayn\u0131 (2026-11-27). "Karla-Bold" yaz\u0131 y\u00fcz\u00fc sitede y\u00fckl\u00fc de\u011fil, Insider da Karla 700 ile \u00e7iziyor.
 '#UrunAksesuarDiv .JKatAdi .satir1,.ProductList.kategoriBlock .JKatAdi .satir1{font-family:Karla,sans-serif!important;font-size:15px!important;font-weight:700!important;letter-spacing:.9px!important;text-transform:uppercase}' +
+// \u00dcr\u00fcn resmi b\u00fcy\u00fctme (Ticimax lightGallery), YALNIZ MASA\u00dcST\u00dc (\u22651024px), Arket tarz\u0131 (2026-11-27, kullan\u0131c\u0131 iste\u011fi): beyaz zemin, k\u00fc\u00e7\u00fck resimler solda dikey,
+// foto\u011fraf ekran geni\u015fli\u011finde ve dikey kayd\u0131r\u0131larak tamam\u0131 g\u00f6r\u00fcl\u00fcr (eskisi: siyah zemin, foto\u011fraf ekran\u0131n ~%30'u, alt 100px k\u00fc\u00e7\u00fck resim \u015feridi alt\u0131nda kal\u0131yordu);
+// oklar/saya\u00e7/yak\u0131nla\u015ft\u0131rma gizli, sa\u011f \u00fcstte yaln\u0131z '\u2297 Kapat' (beyaz zeminli: koyu kampanya foto\u011fraflar\u0131nda da okunsun); galeri a\u00e7\u0131kken Insider yan kutusu ve yukar\u0131-\u00e7\u0131k d\u00fc\u011fmesi gizli. Telefon d\u00fczenine DOKUNMAZ (ayr\u0131 i\u015f).
+'@media (min-width:1024px){body.lg-on .lg-backdrop{background:#fff!important;opacity:1!important}body.lg-on .lg-outer{background:#fff}.lg-outer .lg-toolbar,.lg-outer.lg-hide-items .lg-toolbar{background:transparent!important;height:auto;opacity:1!important;transform:none!important}.lg-outer .lg-toolbar #lg-counter,.lg-outer .lg-toolbar #lg-zoom-in,.lg-outer .lg-toolbar #lg-zoom-out,.lg-outer .lg-toolbar #lg-actual-size,.lg-outer .lg-toolbar .lg-download,.lg-outer .lg-toolbar .lg-fullscreen,.lg-outer .lg-actions,.lg-outer .lg-toogle-thumb{display:none!important}.lg-outer .lg-toolbar .lg-close{position:fixed;top:22px;right:28px;width:auto;height:auto;padding:7px 14px 7px 36px;color:#000!important;font-family:Karla,sans-serif;font-size:14px;line-height:20px;background:rgba(255,255,255,.92)!important;z-index:1090}.lg-outer .lg-toolbar .lg-close:after{content:"Kapat";font-family:Karla,sans-serif}.lg-outer .lg-toolbar .lg-close:before{content:"";position:absolute;left:12px;top:50%;width:16px;height:16px;margin-top:-8px;border:1px solid #000;border-radius:50%;background:linear-gradient(45deg,transparent 46%,#000 46%,#000 54%,transparent 54%) center/8px 8px no-repeat,linear-gradient(-45deg,transparent 46%,#000 46%,#000 54%,transparent 54%) center/8px 8px no-repeat}.lg-outer .lg-thumb-outer{position:fixed!important;left:0;top:0;bottom:0;width:112px!important;height:100%!important;max-height:none!important;background:#fff!important;padding:24px 16px;overflow-y:auto;transform:none!important;z-index:1085}.lg-outer .lg-thumb{display:flex;flex-direction:column;gap:10px;width:auto!important;height:auto!important;transform:none!important;padding:0!important;margin:0!important}.lg-outer .lg-thumb-item{width:80px!important;height:auto!important;margin:0!important;border:0!important;border-radius:0!important;opacity:.55;transition:opacity .2s}.lg-outer .lg-thumb-item img{width:100%;height:auto!important;object-fit:contain}.lg-outer .lg-thumb-item.active,.lg-outer .lg-thumb-item:hover{opacity:1;outline:1px solid #000}.lg-outer .lg-inner{left:112px!important;right:0!important;width:auto!important}.lg-outer .lg-item .lg-img-wrap{position:absolute;inset:0;padding:0!important;overflow-y:auto;overflow-x:hidden;text-align:center;scrollbar-width:none}.lg-outer .lg-item .lg-img-wrap::-webkit-scrollbar{display:none}.lg-outer .lg-item .lg-img-wrap:before{display:none}.lg-outer .lg-item .lg-image{width:100%!important;max-width:none!important;max-height:none!important;height:auto!important;vertical-align:top}.lg-outer.lg-grab img.lg-object{cursor:default}body.lg-on #back-to-top,body.lg-on .ins-preview-wrapper,body.lg-on .adminEditButton{display:none!important}}' +
 '.dki-ok .dki-k{display:none}' +
 '@media (max-width:767px){.dki-ok.dki-coklu{display:flex;width:28px;height:48px;margin-top:-24px;background:transparent;color:#111}.dki-ok:hover{background:transparent}.dki-ok svg:not(.dki-k){display:none}.dki-ok .dki-k{display:block}.dki-geri{left:0}.dki-ileri{right:0}.dki-ok[disabled]{opacity:0;pointer-events:none}}' + // telefonda COS gibi k\u00fc\u00e7\u00fck siyah chevron, beyaz hale YOK (kullan\u0131c\u0131 karar\u0131 2026-11-17)
 '@media (max-width:767px){.dki-kutu{right:6px;bottom:6px}.dki-kutu button{width:34px;height:34px}.dki-kutu svg{width:17px;height:17px}' +
@@ -259,4 +263,67 @@ function basla() { tara(); setTimeout(function () { window.dispatchEvent(new Eve
 var bekleyen = 0; new MutationObserver(function () { if (bekleyen) return; bekleyen = 1; requestAnimationFrame(function () { bekleyen = 0; tara(); }); }).observe(document.body, { childList: true, subtree: true }); }
 // Blok sayfada \u00fcr\u00fcn listesinden SONRA yer al\u0131r (Script Y\u00f6netimi \u203a T\u00fcm Sayfalar, body i\u00e7inde): liste haz\u0131rsa beklemeden ba\u015fla, de\u011filse sayfa y\u00fcklenince
 if (document.readyState !== 'loading' || document.querySelector('.ItemOrj .productItem')) basla(); else document.addEventListener('DOMContentLoaded', basla);
+})();
+// \u00dcr\u00fcn resmi b\u00fcy\u00fctme, YALNIZ MASA\u00dcST\u00dc (\u22651024 px), 2026-11-27 (kullan\u0131c\u0131 iste\u011fi; COS/Arket tarz\u0131): \u00fcr\u00fcn sayfas\u0131nda resme t\u0131klan\u0131nca Ticimax'in galerisi
+// (lightGallery: tek tek foto\u011fraf) yerine t\u00fcm foto\u011fraflar beyaz zeminde, ekran geni\u015fli\u011finde ALT ALTA a\u00e7\u0131l\u0131r; tek kayd\u0131rmayla hepsi g\u00f6r\u00fcl\u00fcr.
+// Solda k\u00fc\u00e7\u00fck resimler (t\u0131klay\u0131nca o foto\u011frafa kayar, g\u00f6r\u00fcnen foto\u011fraf\u0131nki i\u015faretli), sa\u011f \u00fcstte "Kapat" (Esc de kapat\u0131r).
+// Telefon/tablet (<1024 px) ve video \u00f6\u011feleri dokunulmadan Ticimax galerisine gider. Bir hata olursa t\u0131klama Ticimax galerisine b\u0131rak\u0131l\u0131r.
+(function () {
+if (window.__dkz) return; window.__dkz = 1;
+var MASA = window.matchMedia('(min-width:1024px)'), RESIM = /\.(jpe?g|png|webp)(\?|$)/i;
+var css = '.dkz{position:fixed;inset:0;z-index:1000000;background:#fff;display:none}.dkz.dkz-ac{display:block}' +
+'.dkz-kay{position:absolute;top:0;bottom:0;left:112px;right:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;outline:0}.dkz-kay::-webkit-scrollbar{display:none}' +
+'.dkz-kay img{display:block;width:100%;height:auto;margin:0 0 2px;background:#f6f6f6}' +
+'.dkz-kuc{position:absolute;left:0;top:0;bottom:0;width:112px;padding:24px 16px;overflow-y:auto;scrollbar-width:none;background:#fff}.dkz-kuc::-webkit-scrollbar{display:none}' +
+'.dkz-kuc button{display:block;width:80px;margin:0 0 10px;padding:0;border:0;border-radius:0;background:none;cursor:pointer;opacity:.55;transition:opacity .2s}' +
+'.dkz-kuc button img{display:block;width:100%;height:auto}.dkz-kuc button:hover,.dkz-kuc button.dkz-on{opacity:1;outline:1px solid #000}.dkz-kuc button:focus-visible{outline:2px solid #000}' +
+'.dkz-x{position:absolute;top:22px;right:28px;display:flex;align-items:center;gap:8px;padding:7px 14px 7px 12px;border:0;border-radius:0;background:rgba(255,255,255,.92);color:#000;font:14px/20px Karla,sans-serif;cursor:pointer;z-index:2}' +
+'.dkz-x span{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1px solid #000;border-radius:50%}.dkz-x:focus-visible{outline:2px solid #000}' +
+'body.dkz-acik{overflow:hidden}body.dkz-acik #back-to-top,body.dkz-acik .ins-preview-wrapper,body.dkz-acik .adminEditButton{display:none!important}';
+var stil = document.createElement('style'); stil.textContent = css; document.head.appendChild(stil);
+var kat = null, kay = null, kuc = null, dugmeler = [], resimler = [], donus = null, kare = 0;
+function liste() { // galerideki foto\u011fraflar, s\u0131rayla (Owl'un kopyalad\u0131\u011f\u0131 .cloned \u00f6\u011feler hari\u00e7), tekrars\u0131z
+var a = [].slice.call(document.querySelectorAll('.owl-item:not(.cloned) a.lightItem')); if (!a.length) a = [].slice.call(document.querySelectorAll('a.lightItem'));
+var gor = {}, l = []; a.forEach(function (x) { var u = x.getAttribute('href') || ''; if (u && !gor[u]) { gor[u] = 1; l.push(u); } }); return l;
+}
+function kucukAdres(u) { return u.replace(/\/cdn-cgi\/image\/[^/]*\//, '/cdn-cgi/image/width=200,quality=80/'); }
+function isaretle() {
+kare = 0; if (!kay) return; var y = kay.scrollTop + kay.clientHeight * 0.4, i, s = 0;
+for (i = 0; i < resimler.length; i++) { if (resimler[i].offsetTop <= y) s = i; }
+dugmeler.forEach(function (d, k) { d.classList.toggle('dkz-on', k === s); });
+}
+function kapat() { if (!kat) return; kat.classList.remove('dkz-ac'); document.body.classList.remove('dkz-acik'); kat.innerHTML = ''; resimler = []; dugmeler = []; if (donus && donus.focus) donus.focus({ preventScroll: true }); }
+function ac(l, i, kaynak) {
+if (!kat) { kat = document.createElement('div'); kat.className = 'dkz'; kat.setAttribute('role', 'dialog'); kat.setAttribute('aria-modal', 'true'); kat.setAttribute('aria-label', '\u00dcr\u00fcn foto\u011fraflar\u0131'); document.body.appendChild(kat); }
+donus = kaynak; kat.innerHTML = '';
+kuc = document.createElement('div'); kuc.className = 'dkz-kuc';
+kay = document.createElement('div'); kay.className = 'dkz-kay'; kay.tabIndex = -1;
+l.forEach(function (u, k) {
+var r = document.createElement('img'); r.alt = '\u00dcr\u00fcn foto\u011fraf\u0131 ' + (k + 1); r.width = 1000; r.height = 1500; r.decoding = 'async'; if (k !== i) r.loading = 'lazy'; r.src = u; kay.appendChild(r); resimler.push(r);
+var d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', (k + 1) + '. foto\u011frafa git');
+var t = document.createElement('img'); t.alt = ''; t.loading = 'lazy'; t.src = kucukAdres(u); d.appendChild(t);
+d.addEventListener('click', function () { kay.scrollTo({ top: resimler[k].offsetTop, behavior: 'smooth' }); }); kuc.appendChild(d); dugmeler.push(d);
+});
+var x = document.createElement('button'); x.type = 'button'; x.className = 'dkz-x'; x.innerHTML = '<span aria-hidden="true"><svg width="8" height="8" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.4"><path d="M1 1l8 8M9 1L1 9"/></svg></span>Kapat'; x.addEventListener('click', kapat);
+kat.appendChild(kuc); kat.appendChild(kay); kat.appendChild(x);
+kay.addEventListener('scroll', function () { if (!kare) { kare = 1; requestAnimationFrame(isaretle); } }, { passive: true });
+document.body.classList.add('dkz-acik'); kat.classList.add('dkz-ac');
+kay.scrollTop = resimler[i] ? resimler[i].offsetTop : 0; isaretle(); kay.focus({ preventScroll: true }); // klavye \u2191 \u2193 / bo\u015fluk ile kayd\u0131rma
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && kat && kat.classList.contains('dkz-ac')) kapat(); });
+// Ticimax galerisinden \u00d6NCE yakala (yakalama a\u015famas\u0131): masa\u00fcst\u00fc \u0131zgaras\u0131ndaki foto\u011fraf (#divProductGalleryThumb .thumb-item) ya da kayd\u0131r\u0131c\u0131daki a.lightItem
+window.addEventListener('click', function (e) {
+try {
+if (!MASA.matches || e.button) return;
+var t = e.target && e.target.closest && e.target.closest('#divProductGalleryThumb .thumb-item, a.lightItem'); if (!t) return;
+var l = liste(); if (!l.length) return;
+var i = 0;
+if (t.matches('a.lightItem')) i = l.indexOf(t.getAttribute('href'));
+else i = [].slice.call(document.querySelectorAll('#divProductGalleryThumb .thumb-item')).indexOf(t);
+if (i < 0 || i >= l.length || !RESIM.test(l[i])) return; // video vb.: Ticimax galerisi a\u00e7s\u0131n
+var resimL = l.filter(function (u) { return RESIM.test(u); }); i = resimL.indexOf(l[i]);
+e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+ac(resimL, i, t);
+} catch (h) { /* hata: t\u0131klama Ticimax galerisine kal\u0131r */ }
+}, true);
 })();
